@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'views/home/profile_selector.dart';
+import 'views/profiles/profile_list_screen.dart';
 
 void main() {
   runApp(const FoodLenceApp());
@@ -40,7 +42,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   final List<Widget> _pages = const [
     HomeScreen(),
     CompareScreen(),
-    ProfilesScreen(),
+    ProfileListScreen(),
     BackendStatusScreen(),
   ];
 
@@ -136,10 +138,13 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
         actions: [
+          const ProfileSelectorChip(),
+          const SizedBox(width: 8),
           IconButton(
             icon: const Icon(Icons.notifications_none),
             onPressed: () {},
           ),
+          const SizedBox(width: 8),
         ],
       ),
       body: SingleChildScrollView(
