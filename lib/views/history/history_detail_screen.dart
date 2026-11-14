@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'history_list_screen.dart';
+import 'package:foodlence/config/app_colors.dart';
+import 'package:foodlence/models/scan_model.dart';
 
 /// Shows the details of a single scan from the history list.
 class HistoryDetailScreen extends StatelessWidget {
@@ -19,23 +20,23 @@ class HistoryDetailScreen extends StatelessWidget {
     this.onScanAnother,
   });
 
-  static const _teal = Color(0xFF16A085);
+  static const _teal = AppColors.teal;
 
   String get _message => switch (item.verdict) {
-        Verdict.safe =>
-          'No ingredients matching your allergen profile were found. This product looks safe for you.',
-        Verdict.caution =>
-          'Some ingredients may need attention, or the label mentions possible traces. Check the label carefully before consuming.',
-        Verdict.unsafe =>
-          'This product contains ingredients that match your allergen profile. It is not recommended for you.',
-      };
+    Verdict.safe =>
+      'No ingredients matching your allergen profile were found. This product looks safe for you.',
+    Verdict.caution =>
+      'Some ingredients may need attention, or the label mentions possible traces. Check the label carefully before consuming.',
+    Verdict.unsafe =>
+      'This product contains ingredients that match your allergen profile. It is not recommended for you.',
+  };
 
   @override
   Widget build(BuildContext context) {
     final v = item.verdict;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: AppColors.surfaceSlate,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(24, 8, 24, 32),
@@ -73,10 +74,13 @@ class HistoryDetailScreen extends StatelessWidget {
                     item.img,
                     width: double.infinity,
                     fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Container(
-                      color: const Color(0xFFF3F4F6),
-                      child: const Icon(Icons.fastfood,
-                          size: 48, color: Color(0xFFD1D5DB)),
+                    errorBuilder: (_, _, _) => Container(
+                      color: AppColors.chipBg,
+                      child: const Icon(
+                        Icons.fastfood,
+                        size: 48,
+                        color: AppColors.checkBorder,
+                      ),
                     ),
                   ),
                 ),
@@ -95,8 +99,11 @@ class HistoryDetailScreen extends StatelessWidget {
               const SizedBox(height: 4),
               Row(
                 children: [
-                  const Icon(Icons.access_time,
-                      size: 14, color: Color(0xFF9CA3AF)),
+                  const Icon(
+                    Icons.access_time,
+                    size: 14,
+                    color: Color(0xFF9CA3AF),
+                  ),
                   const SizedBox(width: 6),
                   Text(
                     'Scanned ${item.date}',
@@ -177,7 +184,7 @@ class HistoryDetailScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: _teal.withOpacity(0.3),
+                          color: _teal.withValues(alpha: 0.3),
                           blurRadius: 15,
                           offset: const Offset(0, 8),
                         ),

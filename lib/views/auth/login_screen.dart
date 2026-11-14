@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:foodlence/config/app_colors.dart';
 
-const _teal = Color(0xFF16A085);
-const _ink = Color(0xFF111827);
-const _gray500 = Color(0xFF6B7280);
-const _gray400 = Color(0xFF9CA3AF);
-const _gray700 = Color(0xFF374151);
-const _border = Color(0xFFE5E7EB);
-const _fieldBg = Color(0xFFF9FAFB);
+const _teal = AppColors.teal;
+const _ink = AppColors.textDark;
+const _gray500 = AppColors.gray;
+const _gray400 = AppColors.grayLight;
+const _gray700 = AppColors.label;
+const _border = AppColors.border;
+const _fieldBg = AppColors.fill;
 
 class LoginScreen extends StatefulWidget {
   final VoidCallback? onSignIn;
@@ -201,7 +202,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: _teal.withOpacity(0.3),
+                      color: _teal.withValues(alpha: 0.3),
                       blurRadius: 15,
                       offset: const Offset(0, 8),
                     ),
@@ -261,13 +262,13 @@ class _Label extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Text(
-        text,
-        style: const TextStyle(
-          color: _gray700,
-          fontSize: 13,
-          fontWeight: FontWeight.w600,
-        ),
-      );
+    text,
+    style: const TextStyle(
+      color: _gray700,
+      fontSize: 13,
+      fontWeight: FontWeight.w600,
+    ),
+  );
 }
 
 /// Text field that highlights its border and background on focus.
