@@ -14,6 +14,7 @@ class AppRoutes {
   AppRoutes._();
 
   static const String splash = '/';
+  static const String onboarding = '/onboarding';
   static const String login = '/login';
   static const String register = '/register';
   static const String home = '/home';
@@ -29,9 +30,7 @@ class AppRoutes {
       case splash:
         return MaterialPageRoute(
           settings: routeSettings,
-          builder: (context) => SplashScreen(
-            onFinish: () => Navigator.of(context).pushReplacementNamed(login),
-          ),
+          builder: (context) => const SplashScreen(),
         );
       case home:
       case dashboard:
@@ -39,6 +38,7 @@ class AppRoutes {
           settings: routeSettings,
           builder: (_) => const MainNavigationScreen(),
         );
+      case onboarding:
       case login:
         return MaterialPageRoute(
           settings: routeSettings,
