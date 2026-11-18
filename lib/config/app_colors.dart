@@ -6,6 +6,7 @@ class AppColors {
 
   // Brand & UI neutrals
   static const teal = Color(0xFF16A085);
+  static const primary = teal;
   static const primaryGreen = Color(0xFF0F9D58);
   static const surfaceGreenTint = Color(0xFFF8FAF9);
   static const textDark = Color(0xFF111827);
