@@ -11,6 +11,17 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
+class DashboardScreen extends StatelessWidget {
+  const DashboardScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: Center(child: Text('Dashboard (placeholder)')),
+    );
+  }
+}
+
 class _HomeScreenState extends State<HomeScreen> {
   String _selectedProfile = 'Dilshan (Nut & Gluten Allergy)';
   String _sampleText =
