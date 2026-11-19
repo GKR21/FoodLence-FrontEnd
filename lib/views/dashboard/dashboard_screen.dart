@@ -1,453 +1,615 @@
 import 'package:flutter/material.dart';
 import 'package:foodlence/config/app_colors.dart';
-import 'package:foodlence/config/app_constants.dart';
 import 'package:foodlence/config/app_routes.dart';
+import 'package:foodlence/models/scan_model.dart';
+import 'package:foodlence/widgets/dashboard/quick_action_card.dart';
+import 'package:foodlence/widgets/dashboard/safety_summary_card.dart';
 
-/// Main scanner and live analysis preview screen.
+/// Main Dashboard and Home screen matching the FoodLense UI design.
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final VoidCallback? onOpenScanner;
+  final VoidCallback? onOpenHistory;
+  final VoidCallback? onOpenProfile;
+
+  const HomeScreen({
+    super.key,
+    this.onOpenScanner,
+    this.onOpenHistory,
+    this.onOpenProfile,
+  });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class DashboardScreen extends StatelessWidget {
-  const DashboardScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(child: Text('Dashboard (placeholder)')),
-    );
-  }
-}
-
 class _HomeScreenState extends State<HomeScreen> {
-  String _selectedProfile = 'Dilshan (Nut & Gluten Allergy)';
-  String _sampleText =
-      'Wheat Flour, Sugar, Palm Oil, Cocoa Butter, Whey Solids (Milk), Soy Lecithin (E322), Peanut Butter, Salt.';
   bool _isAnalyzing = false;
-  bool _hasResult = true;
+  ScanItem? _simulatedResult;
 
-  void _runSimulation(String text) {
+  void _runScanSimulation({required bool isSafe}) {
     setState(() {
-      _sampleText = text;
       _isAnalyzing = true;
-      _hasResult = false;
+      _simulatedResult = null;
     });
 
-    Future.delayed(const Duration(milliseconds: 600), () {
-      if (mounted) {
-        setState(() {
-          _isAnalyzing = false;
-          _hasResult = true;
-        });
-      }
+    Future.delayed(const Duration(milliseconds: 900), () {
+      if (!mounted) return;
+      setState(() {
+        _isAnalyzing = false;
+        _simulatedResult = isSafe
+            ? const ScanItem(
+                name: 'Organic Almond Granola Bar',
+                date: 'Just now',
+                verdict: Verdict.safe,
+                img:
+                    'https://images.unsplash.com/photo-1571748982800-fa51082c2224?w=80&h=80&fit=crop&auto=format',
+              )
+            : const ScanItem(
+                name: 'Chocolate Chip Cookies (Contains Peanuts)',
+                date: 'Just now',
+                verdict: Verdict.unsafe,
+                img:
+                    'https://images.unsplash.com/photo-1499636136210-6f4ee915583e?w=80&h=80&fit=crop&auto=format',
+              );
+      });
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: AppColors.primaryGreen.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(8),
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildTopHeader(context),
+              const SizedBox(height: 20),
+              SafetySummaryCard(
+                onScanNow: () {
+                  if (widget.onOpenScanner != null) {
+                    widget.onOpenScanner!();
+                  } else {
+                    _runScanSimulation(isSafe: false);
+                  }
+                },
+                onUploadImage: () => _runScanSimulation(isSafe: true),
               ),
-              child: const Icon(
-                Icons.eco,
-                color: AppColors.primaryGreen,
-                size: 24,
-              ),
-            ),
-            const SizedBox(width: 10),
-            const Text(
-              AppConstants.appName,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-            ),
-          ],
+              const SizedBox(height: 24),
+              _buildQuickActions(context),
+              const SizedBox(height: 24),
+              if (_isAnalyzing)
+                _buildAnalysisLoading()
+              else if (_simulatedResult != null) ...[
+                _buildSimulationResultCard(_simulatedResult!),
+                const SizedBox(height: 20),
+              ],
+              _buildRecentScansSection(context),
+              const SizedBox(height: 16),
+              _buildOfflineBanner(),
+              const SizedBox(height: 20),
+            ],
+          ),
         ),
-        actions: [
-          IconButton(
-            tooltip: 'Account',
-            icon: const Icon(Icons.account_circle_outlined),
-            onPressed: () {
-              Navigator.of(context).pushNamed(AppRoutes.login);
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.notifications_none),
-            onPressed: () {},
-          ),
-        ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
+    );
+  }
+
+  // Top Header with greeting, name, active profile and right side action buttons
+  Widget _buildTopHeader(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Profile selector card
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey.shade300),
+            const Text(
+              'Good morning 👋',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: Color(0xFF6B7280),
               ),
-              child: Row(
+            ),
+            const SizedBox(height: 2),
+            const Text(
+              'Heshan',
+              style: TextStyle(
+                fontSize: 26,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF111827),
+                letterSpacing: -0.5,
+              ),
+            ),
+            const SizedBox(height: 2),
+            RichText(
+              text: const TextSpan(
+                text: 'Scanning for: ',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w400,
+                  color: Color(0xFF9CA3AF),
+                ),
                 children: [
-                  const Icon(
-                    Icons.person,
-                    color: AppColors.primaryGreen,
-                    size: 22,
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Active Health Profile',
-                          style: TextStyle(fontSize: 11, color: Colors.grey),
-                        ),
-                        Text(
-                          _selectedProfile,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 13,
-                          ),
-                        ),
-                      ],
+                  TextSpan(
+                    text: 'Heshan',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF16A085),
                     ),
-                  ),
-                  PopupMenuButton<String>(
-                    icon: const Icon(Icons.swap_horiz, color: Colors.grey),
-                    onSelected: (val) => setState(() => _selectedProfile = val),
-                    itemBuilder: (context) => [
-                      const PopupMenuItem(
-                        value: 'Dilshan (Nut & Gluten Allergy)',
-                        child: Text('Dilshan (Nut & Gluten)'),
-                      ),
-                      const PopupMenuItem(
-                        value: 'Child (Dairy & Egg Allergy)',
-                        child: Text('Child (Dairy & Egg)'),
-                      ),
-                      const PopupMenuItem(
-                        value: 'Family Profile (Universal Filter)',
-                        child: Text('Family (All Combined)'),
-                      ),
-                    ],
                   ),
                 ],
               ),
             ),
-
-            const SizedBox(height: 16),
-
-            // Camera / Scan Card
-            Card(
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-                side: BorderSide(color: Colors.grey.shade200),
-              ),
-              color: Colors.white,
-              child: Padding(
-                padding: const EdgeInsets.all(18),
-                child: Column(
-                  children: [
-                    Container(
-                      height: 140,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: AppColors.mintBg,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: AppColors.primaryGreen.withValues(alpha: 0.3),
-                        ),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            Icons.camera_alt_outlined,
-                            size: 44,
-                            color: AppColors.primaryGreen,
-                          ),
-                          const SizedBox(height: 8),
-                          const Text(
-                            'Point Camera at Food Label',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15,
-                              color: AppColors.navyAccent,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            'Extracts text with On-Device OCR & AI Analysis',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey.shade600,
-                            ),
-                          ),
-                        ],
-                      ),
+          ],
+        ),
+        Row(
+          children: [
+            // Notification bell with red badge dot
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFF3F4F6),
+                    shape: BoxShape.circle,
+                  ),
+                  child: IconButton(
+                    icon: const Icon(
+                      Icons.notifications_none,
+                      color: Color(0xFF374151),
+                      size: 22,
                     ),
-                    const SizedBox(height: 14),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: FilledButton.icon(
-                            style: FilledButton.styleFrom(
-                              backgroundColor: AppColors.primaryGreen,
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                            icon: const Icon(Icons.document_scanner, size: 18),
-                            label: const Text('Scan Packaging'),
-                            onPressed: () => _runSimulation(
-                              'Wheat Flour, Milk Solids, Peanut Butter, Soy Lecithin E322.',
-                            ),
-                          ),
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('No new allergen alert notifications.'),
+                          duration: Duration(seconds: 2),
                         ),
-                        const SizedBox(width: 8),
-                        OutlinedButton(
-                          style: OutlinedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 12,
-                              horizontal: 16,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          onPressed: () => _runSimulation(
-                            'Rolled Oats, Organic Honey, Almond Milk, Chia Seeds.',
-                          ),
-                          child: const Text('Sample B (Safe)'),
-                        ),
-                      ],
+                      );
+                    },
+                  ),
+                ),
+                Positioned(
+                  top: 9,
+                  right: 11,
+                  child: Container(
+                    width: 9,
+                    height: 9,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFEF4444),
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white, width: 1.5),
                     ),
-                  ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(width: 12),
+            // User Avatar circle 'H'
+            InkWell(
+              onTap: () {
+                if (widget.onOpenProfile != null) {
+                  widget.onOpenProfile!();
+                } else {
+                  Navigator.of(context).pushNamed(AppRoutes.profiles);
+                }
+              },
+              borderRadius: BorderRadius.circular(22),
+              child: Container(
+                width: 44,
+                height: 44,
+                decoration: const BoxDecoration(
+                  color: Color(0xFF16A085),
+                  shape: BoxShape.circle,
+                ),
+                alignment: Alignment.center,
+                child: const Text(
+                  'H',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
+          ],
+        ),
+      ],
+    );
+  }
 
-            const SizedBox(height: 16),
-
-            // Live Analysis Result Preview
-            if (_isAnalyzing)
-              const Center(
-                child: Padding(
-                  padding: EdgeInsets.all(32),
-                  child: Column(
-                    children: [
-                      CircularProgressIndicator(color: AppColors.primaryGreen),
-                      SizedBox(height: 12),
-                      Text('Running Semantic AI & Allergen Matching...'),
-                    ],
-                  ),
-                ),
-              )
-            else if (_hasResult) ...[
-              const Text(
-                'AI Analysis Result',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-
-              // Danger Alert Banner
-              Container(
-                padding: const EdgeInsets.all(14),
+  // Quick Actions: My Allergens, Search, Scan History, Learn
+  Widget _buildQuickActions(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Quick Actions',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF111827),
+          ),
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            QuickActionCard(
+              icon: Container(
+                width: 32,
+                height: 32,
                 decoration: BoxDecoration(
-                  color: _sampleText.contains('Peanut')
-                      ? AppColors.unsafeBg
-                      : AppColors.safeBg,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: _sampleText.contains('Peanut')
-                        ? AppColors.unsafeDot
-                        : AppColors.safeDot,
-                  ),
+                  color: const Color(0xFFEFF6FF),
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                child: Row(
-                  children: [
-                    Icon(
-                      _sampleText.contains('Peanut')
-                          ? Icons.warning_amber_rounded
-                          : Icons.check_circle_outline,
-                      color: _sampleText.contains('Peanut')
-                          ? AppColors.unsafeText
-                          : AppColors.safeText,
-                      size: 28,
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            _sampleText.contains('Peanut')
-                                ? 'ALLERGY WARNING DETECTED'
-                                : 'PRODUCT APPEARS SAFE',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                              color: _sampleText.contains('Peanut')
-                                  ? AppColors.unsafeDark
-                                  : AppColors.safeDark,
-                            ),
-                          ),
-                          Text(
-                            _sampleText.contains('Peanut')
-                                ? 'Contains ingredients conflicting with ${_selectedProfile.split(' ')[0]}\'s profile.'
-                                : 'No conflicting allergens found for the active profile.',
-                            style: const TextStyle(fontSize: 12),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                child: const Icon(
+                  Icons.shield_outlined,
+                  color: Color(0xFF3B82F6),
+                  size: 20,
                 ),
               ),
-
-              const SizedBox(height: 12),
-
-              // Detected Allergens Chips
-              Card(
-                elevation: 0,
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  side: BorderSide(color: Colors.grey.shade200),
+              title: 'My Allergens',
+              onTap: () {
+                if (widget.onOpenProfile != null) {
+                  widget.onOpenProfile!();
+                } else {
+                  Navigator.of(context).pushNamed(AppRoutes.profiles);
+                }
+              },
+            ),
+            const SizedBox(width: 10),
+            QuickActionCard(
+              icon: Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF5F3FF),
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.all(14),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Detected Ingredients & Allergens',
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: _sampleText.contains('Peanut')
-                            ? [
-                                _allergenChip(
-                                  'Peanut (High Risk)',
-                                  true,
-                                  '98%',
-                                ),
-                                _allergenChip('Wheat / Gluten', true, '95%'),
-                                _allergenChip(
-                                  'Whey Solids (Dairy)',
-                                  true,
-                                  '92%',
-                                ),
-                                _allergenChip('Soy Lecithin', true, '88%'),
-                              ]
-                            : [
-                                _allergenChip('Rolled Oats', false, '99%'),
-                                _allergenChip('Honey', false, '97%'),
-                                _allergenChip('Almond Milk', false, '96%'),
-                              ],
-                      ),
-                      const Divider(height: 24),
-                      const Text(
-                        'Chemical Additives & E-Numbers',
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 4,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.amber.shade100,
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: const Text(
-                              'E322',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 12,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          const Text(
-                            'Lecithins (Emulsifier / Stabilizer)',
-                            style: TextStyle(fontSize: 13),
-                          ),
-                        ],
-                      ),
-                    ],
+                child: const Icon(
+                  Icons.search_rounded,
+                  color: Color(0xFF8B5CF6),
+                  size: 20,
+                ),
+              ),
+              title: 'Search',
+              onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Opening Ingredient Database Search...'),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(width: 10),
+            QuickActionCard(
+              icon: Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF3F4F6),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(
+                  Icons.access_time_rounded,
+                  color: Color(0xFF6B7280),
+                  size: 20,
+                ),
+              ),
+              title: 'Scan History',
+              onTap: () {
+                if (widget.onOpenHistory != null) {
+                  widget.onOpenHistory!();
+                } else {
+                  Navigator.of(context).pushNamed(AppRoutes.history);
+                }
+              },
+            ),
+            const SizedBox(width: 10),
+            QuickActionCard(
+              icon: Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFECFDF5),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(
+                  Icons.style_outlined,
+                  color: Color(0xFF10B981),
+                  size: 20,
+                ),
+              ),
+              title: 'Learn',
+              onTap: () {
+                Navigator.of(context).pushNamed(AppRoutes.settings);
+              },
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  // Recent Scans Section with "See all" header
+  Widget _buildRecentScansSection(BuildContext context) {
+    final recentItems = kHistory.take(3).toList();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              'Recent Scans',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF111827),
+              ),
+            ),
+            InkWell(
+              onTap: () {
+                if (widget.onOpenHistory != null) {
+                  widget.onOpenHistory!();
+                } else {
+                  Navigator.of(context).pushNamed(AppRoutes.history);
+                }
+              },
+              child: const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                child: Text(
+                  'See all',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF16A085),
                   ),
                 ),
               ),
-            ],
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        ListView.separated(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: recentItems.length,
+          separatorBuilder: (_, _) => const SizedBox(height: 10),
+          itemBuilder: (context, index) {
+            final item = recentItems[index];
+            return _buildRecentScanTile(context, item);
+          },
+        ),
+      ],
+    );
+  }
+
+  // Individual recent scan card matching screenshot
+  Widget _buildRecentScanTile(BuildContext context, ScanItem item) {
+    return InkWell(
+      onTap: () {
+        Navigator.of(
+          context,
+        ).pushNamed(AppRoutes.historyDetail, arguments: item);
+      },
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: const Color(0xFFE5E7EB)),
+        ),
+        child: Row(
+          children: [
+            // Food image thumbnail
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.network(
+                item.img,
+                width: 48,
+                height: 48,
+                fit: BoxFit.cover,
+                errorBuilder: (_, _, _) => Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF3F4F6),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Icon(
+                    Icons.fastfood_outlined,
+                    color: Color(0xFF9CA3AF),
+                    size: 24,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 14),
+            // Title & Date
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    item.name,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF111827),
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    item.date,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: Color(0xFF6B7280),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            // Status Badge (Safe, Caution, Unsafe)
+            _buildVerdictBadge(item.verdict),
           ],
         ),
       ),
     );
   }
 
-  Widget _allergenChip(String name, bool isRisk, String confidence) {
+  // Verdict status badge pill matching screenshots
+  Widget _buildVerdictBadge(Verdict verdict) {
+    final (String label, Color bg, Color fg) = switch (verdict) {
+      Verdict.safe => (
+        '✓ Safe',
+        const Color(0xFFDCFCE7),
+        const Color(0xFF16A34A),
+      ),
+      Verdict.caution => (
+        '⚠️ Caution',
+        const Color(0xFFFEF3C7),
+        const Color(0xFFD97706),
+      ),
+      Verdict.unsafe => (
+        '✕ Unsafe',
+        const Color(0xFFFEE2E2),
+        const Color(0xFFDC2626),
+      ),
+    };
+
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: isRisk ? AppColors.unsafeBg : AppColors.chipBg,
-        borderRadius: BorderRadius.circular(8),
+        color: bg,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: fg),
+      ),
+    );
+  }
+
+  // Offline mode alert banner from Screenshot 2
+  Widget _buildOfflineBanner() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFF7ED),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFFFFEDD5)),
+      ),
+      child: const Row(
+        children: [
+          Icon(Icons.wifi_off_rounded, color: Color(0xFFEA580C), size: 20),
+          SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              'Offline mode — analysis requires internet',
+              style: TextStyle(
+                color: Color(0xFF9A3412),
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAnalysisLoading() {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 20),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF0FDF4),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.teal.withValues(alpha: 0.3)),
+      ),
+      child: const Center(
+        child: Column(
+          children: [
+            CircularProgressIndicator(color: AppColors.teal),
+            SizedBox(height: 12),
+            Text(
+              'Analyzing food label with AI & OCR...',
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF111827),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSimulationResultCard(ScanItem item) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: item.verdict == Verdict.safe
+            ? const Color(0xFFDCFCE7)
+            : const Color(0xFFFEE2E2),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isRisk ? AppColors.unsafeBorder : Colors.grey.shade300,
+          color: item.verdict == Verdict.safe
+              ? const Color(0xFF86EFAC)
+              : const Color(0xFFFCA5A5),
         ),
       ),
       child: Row(
-        mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
-            isRisk ? Icons.dangerous : Icons.check,
-            size: 14,
-            color: isRisk ? Colors.red : Colors.green,
+            item.verdict == Verdict.safe
+                ? Icons.check_circle_outline
+                : Icons.warning_amber_rounded,
+            color: item.verdict == Verdict.safe
+                ? const Color(0xFF16A34A)
+                : const Color(0xFFDC2626),
+            size: 28,
           ),
-          const SizedBox(width: 4),
-          Text(
-            name,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: isRisk ? AppColors.unsafeDeep : Colors.black87,
-            ),
-          ),
-          const SizedBox(width: 6),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: Text(
-              confidence,
-              style: const TextStyle(fontSize: 10, color: Colors.grey),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item.verdict == Verdict.safe
+                      ? 'PRODUCT APPEARS SAFE'
+                      : 'ALLERGEN WARNING DETECTED',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                    color: item.verdict == Verdict.safe
+                        ? const Color(0xFF15803D)
+                        : const Color(0xFFB91C1C),
+                  ),
+                ),
+                Text(
+                  item.name,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Color(0xFF374151),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -455,3 +617,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
+
+/// Backwards compatibility alias for the dashboard screen.
+typedef DashboardScreen = HomeScreen;

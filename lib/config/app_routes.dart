@@ -5,6 +5,7 @@ import 'package:foodlence/views/auth/register_screen.dart';
 import 'package:foodlence/views/history/history_detail_screen.dart';
 import 'package:foodlence/views/history/history_screen.dart';
 import 'package:foodlence/views/profiles/profile_screen.dart';
+import 'package:foodlence/views/scanner/scanner_screen.dart';
 import 'package:foodlence/views/settings/settings_screen.dart';
 import 'package:foodlence/views/splash/splash_screen.dart';
 import 'package:foodlence/widgets/navigation/bottom_navigation_bar.dart';
@@ -20,6 +21,8 @@ class AppRoutes {
   static const String home = '/home';
   static const String dashboard = '/dashboard';
   static const String profiles = '/profiles';
+  static const String profile = '/profile';
+  static const String scanner = '/scanner';
   static const String settings = '/settings';
   static const String backendStatus = '/backend-status';
   static const String history = '/history';
@@ -37,6 +40,11 @@ class AppRoutes {
         return MaterialPageRoute(
           settings: routeSettings,
           builder: (_) => const MainNavigationScreen(),
+        );
+      case scanner:
+        return MaterialPageRoute(
+          settings: routeSettings,
+          builder: (_) => const ScannerScreen(),
         );
       case onboarding:
       case login:
@@ -59,6 +67,7 @@ class AppRoutes {
           ),
         );
       case profiles:
+      case profile:
         return MaterialPageRoute(
           settings: routeSettings,
           builder: (_) => const ProfilesScreen(),
