@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../../config/app_colors.dart';
 import '../../config/app_routes.dart';
 import '../../models/allergen_model.dart';
-import '../../providers/profile_provider.dart';
 import '../../widgets/common/custom_button.dart';
 
 enum _Step { intro, select, done }
@@ -34,15 +32,16 @@ class _AddProfileScreenState extends State<AddProfileScreen> {
   }
 
   void _save() {
-    context.read<ProfileProvider>().setAllergens(_selected);
     setState(() => _step = _Step.done);
   }
 
-  void _goHome() => Navigator.of(context)
-      .pushNamedAndRemoveUntil(AppRoutes.dashboard, (_) => false);
+  void _goHome() => Navigator.of(
+    context,
+  ).pushNamedAndRemoveUntil(AppRoutes.dashboard, (_) => false);
 
-  void _goScan() => Navigator.of(context)
-      .pushNamedAndRemoveUntil(AppRoutes.scanner, (_) => false);
+  void _goScan() => Navigator.of(
+    context,
+  ).pushNamedAndRemoveUntil(AppRoutes.scanner, (_) => false);
 
   @override
   Widget build(BuildContext context) {
@@ -56,23 +55,23 @@ class _AddProfileScreenState extends State<AddProfileScreen> {
       },
       child: switch (_step) {
         _Step.intro => _IntroView(
-            onSet: () => setState(() => _step = _Step.select),
-            onSkip: _goHome,
-          ),
+          onSet: () => setState(() => _step = _Step.select),
+          onSkip: _goHome,
+        ),
         _Step.select => _SelectView(
-            selected: _selected,
-            searchController: _search,
-            query: _query,
-            onQueryChanged: (v) => setState(() => _query = v),
-            onToggle: _toggle,
-            onBack: () => setState(() => _step = _Step.intro),
-            onContinue: _save,
-          ),
+          selected: _selected,
+          searchController: _search,
+          query: _query,
+          onQueryChanged: (v) => setState(() => _query = v),
+          onToggle: _toggle,
+          onBack: () => setState(() => _step = _Step.intro),
+          onContinue: _save,
+        ),
         _Step.done => _DoneView(
-            count: _selected.length,
-            onScan: _goScan,
-            onHome: _goHome,
-          ),
+          count: _selected.length,
+          onScan: _goScan,
+          onHome: _goHome,
+        ),
       },
     );
   }
@@ -110,8 +109,11 @@ class _IntroView extends StatelessWidget {
                       color: AppColors.primary.withValues(alpha: 0.15),
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(Icons.check_circle_outline,
-                        color: AppColors.primary, size: 38),
+                    child: const Icon(
+                      Icons.check_circle_outline,
+                      color: AppColors.primary,
+                      size: 38,
+                    ),
                   ),
                 ),
               ),
@@ -188,7 +190,9 @@ class _SelectView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final items = Allergen.catalog
-        .where((a) => a.label.toLowerCase().contains(query.trim().toLowerCase()))
+        .where(
+          (a) => a.label.toLowerCase().contains(query.trim().toLowerCase()),
+        )
         .toList();
     final n = selected.length;
 
@@ -212,8 +216,11 @@ class _SelectView extends StatelessWidget {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.arrow_back,
-                              size: 20, color: AppColors.primary),
+                          Icon(
+                            Icons.arrow_back,
+                            size: 20,
+                            color: AppColors.primary,
+                          ),
                           SizedBox(width: 8),
                           Text(
                             'Back',
@@ -240,7 +247,9 @@ class _SelectView extends StatelessWidget {
                   const Text(
                     'Tap to select. Selected allergens will be monitored.',
                     style: TextStyle(
-                        fontSize: 13, color: AppColors.textSecondary),
+                      fontSize: 13,
+                      color: AppColors.textSecondary,
+                    ),
                   ),
                   const SizedBox(height: 16),
                   _SearchField(
@@ -262,11 +271,11 @@ class _SelectView extends StatelessWidget {
                       itemCount: items.length,
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
-                        mainAxisExtent: 64,
-                      ),
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 12,
+                            mainAxisSpacing: 12,
+                            mainAxisExtent: 64,
+                          ),
                       itemBuilder: (_, i) {
                         final a = items[i];
                         return _AllergenCard(
@@ -285,7 +294,9 @@ class _SelectView extends StatelessWidget {
                           child: Text(
                             'No allergens found',
                             style: TextStyle(
-                                color: AppColors.textMuted, fontSize: 14),
+                              color: AppColors.textMuted,
+                              fontSize: 14,
+                            ),
                           ),
                         ),
                       ),
@@ -365,7 +376,9 @@ class _SearchField extends StatelessWidget {
               controller: controller,
               onChanged: onChanged,
               style: const TextStyle(
-                  fontSize: 14, color: AppColors.textPrimary),
+                fontSize: 14,
+                color: AppColors.textPrimary,
+              ),
               decoration: const InputDecoration(
                 border: InputBorder.none,
                 isDense: true,
@@ -419,8 +432,7 @@ class _AllergenCard extends StatelessWidget {
                   fontSize: 13,
                   height: 1.2,
                   fontWeight: FontWeight.w600,
-                  color:
-                      selected ? AppColors.primary : AppColors.textPrimary,
+                  color: selected ? AppColors.primary : AppColors.textPrimary,
                 ),
               ),
             ),
@@ -471,8 +483,11 @@ class _DoneView extends StatelessWidget {
                   color: AppColors.primaryLight,
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.check_circle_outline,
-                    color: AppColors.primary, size: 60),
+                child: const Icon(
+                  Icons.check_circle_outline,
+                  color: AppColors.primary,
+                  size: 60,
+                ),
               ),
               const SizedBox(height: 32),
               const Text(
@@ -500,7 +515,9 @@ class _DoneView extends StatelessWidget {
                 ),
                 textAlign: TextAlign.center,
                 style: const TextStyle(
-                    fontSize: 15, color: AppColors.textSecondary),
+                  fontSize: 15,
+                  color: AppColors.textSecondary,
+                ),
               ),
               const SizedBox(height: 8),
               const Text(

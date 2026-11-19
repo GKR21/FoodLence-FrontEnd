@@ -14,4 +14,4 @@ class ProfileProvider extends ChangeNotifier {
   }
 
   bool hasAllergen(String id) => _allergenIds.contains(id);
-}t
+}
