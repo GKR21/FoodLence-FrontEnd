@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:foodlence/models/scan_model.dart';
 import 'package:foodlence/views/auth/login_screen.dart';
 import 'package:foodlence/views/auth/register_screen.dart';
+import 'package:foodlence/views/disclaimer/disclaimer_screen.dart';
 import 'package:foodlence/views/history/history_detail_screen.dart';
 import 'package:foodlence/views/history/history_screen.dart';
+import 'package:foodlence/views/onboarding/onboarding_screen.dart';
 import 'package:foodlence/views/profiles/profile_screen.dart';
 import 'package:foodlence/views/scanner/scanner_screen.dart';
 import 'package:foodlence/views/settings/settings_screen.dart';
@@ -16,6 +18,7 @@ class AppRoutes {
 
   static const String splash = '/';
   static const String onboarding = '/onboarding';
+  static const String disclaimer = '/disclaimer';
   static const String login = '/login';
   static const String register = '/register';
   static const String home = '/home';
@@ -35,6 +38,23 @@ class AppRoutes {
           settings: routeSettings,
           builder: (context) => const SplashScreen(),
         );
+      case onboarding:
+        return MaterialPageRoute(
+          settings: routeSettings,
+          builder: (context) => OnboardingScreen(
+            onFinish: () =>
+                Navigator.of(context).pushReplacementNamed(disclaimer),
+            onSkip: () => Navigator.of(context).pushReplacementNamed(login),
+            onLogin: () => Navigator.of(context).pushReplacementNamed(login),
+          ),
+        );
+      case disclaimer:
+        return MaterialPageRoute(
+          settings: routeSettings,
+          builder: (context) => DisclaimerScreen(
+            onAccept: () => Navigator.of(context).pushReplacementNamed(login),
+          ),
+        );
       case home:
       case dashboard:
         return MaterialPageRoute(
@@ -46,7 +66,6 @@ class AppRoutes {
           settings: routeSettings,
           builder: (_) => const ScannerScreen(),
         );
-      case onboarding:
       case login:
         return MaterialPageRoute(
           settings: routeSettings,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:foodlence/config/app_routes.dart';
 import 'package:foodlence/models/scan_model.dart';
 import 'package:foodlence/views/dashboard/dashboard_screen.dart';
 import 'package:foodlence/views/history/history_detail_screen.dart';
@@ -39,7 +40,18 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
         onOpenHistory: () => _onTabTapped(2),
         onOpenProfile: () => _onTabTapped(3),
       ),
-      ScannerScreen(onClose: () => _onTabTapped(0)),
+      ScannerScreen(
+        onClose: () => _onTabTapped(0),
+        go: (route, {data}) {
+          if (route == "home") {
+            _onTabTapped(0);
+          } else if (route == "processing") {
+            Navigator.of(
+              context,
+            ).pushNamed(AppRoutes.historyDetail, arguments: kHistory.first);
+          }
+        },
+      ),
       HistoryListScreen(
         bottomNavigationBar: null,
         onItemTap: (ScanItem item) {
