@@ -257,11 +257,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               title: 'My Allergens',
               onTap: () {
-                if (widget.onOpenProfile != null) {
-                  widget.onOpenProfile!();
-                } else {
-                  Navigator.of(context).pushNamed(AppRoutes.profiles);
-                }
+                Navigator.of(context).pushNamed(AppRoutes.allergens);
               },
             ),
             const SizedBox(width: 10),

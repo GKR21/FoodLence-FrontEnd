@@ -58,7 +58,7 @@ class ProfileScreen extends StatelessWidget {
     }
     switch (screen) {
       case 'allergens':
-        Navigator.of(context).pushNamed(AppRoutes.profiles);
+        Navigator.of(context).pushNamed(AppRoutes.allergens);
         break;
       case 'settings':
         Navigator.of(context).pushNamed(AppRoutes.settings);

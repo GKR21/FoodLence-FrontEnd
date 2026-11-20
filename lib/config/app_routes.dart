@@ -6,6 +6,7 @@ import 'package:foodlence/views/disclaimer/disclaimer_screen.dart';
 import 'package:foodlence/views/history/history_detail_screen.dart';
 import 'package:foodlence/views/history/history_screen.dart';
 import 'package:foodlence/views/onboarding/onboarding_screen.dart';
+import 'package:foodlence/views/profiles/allergens_screen.dart';
 import 'package:foodlence/views/profiles/profile_screen.dart';
 import 'package:foodlence/views/scanner/scanner_screen.dart';
 import 'package:foodlence/views/settings/settings_screen.dart';
@@ -25,6 +26,7 @@ class AppRoutes {
   static const String dashboard = '/dashboard';
   static const String profiles = '/profiles';
   static const String profile = '/profile';
+  static const String allergens = '/allergens';
   static const String scanner = '/scanner';
   static const String settings = '/settings';
   static const String backendStatus = '/backend-status';
@@ -90,6 +92,11 @@ class AppRoutes {
         return MaterialPageRoute(
           settings: routeSettings,
           builder: (_) => const ProfilesScreen(),
+        );
+      case allergens:
+        return MaterialPageRoute(
+          settings: routeSettings,
+          builder: (_) => const AllergensScreen(),
         );
       case settings:
       case backendStatus:
