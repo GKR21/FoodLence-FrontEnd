@@ -9,6 +9,7 @@ import 'package:foodlence/views/onboarding/onboarding_screen.dart';
 import 'package:foodlence/views/profiles/allergens_screen.dart';
 import 'package:foodlence/views/profiles/profile_screen.dart';
 import 'package:foodlence/views/scanner/scanner_screen.dart';
+import 'package:foodlence/views/scanner/scanning_screen.dart';
 import 'package:foodlence/views/settings/settings_screen.dart';
 import 'package:foodlence/views/splash/splash_screen.dart';
 import 'package:foodlence/widgets/navigation/bottom_navigation_bar.dart';
@@ -28,6 +29,8 @@ class AppRoutes {
   static const String profile = '/profile';
   static const String allergens = '/allergens';
   static const String scanner = '/scanner';
+  static const String scanning = '/scanning';
+  static const String processing = '/processing';
   static const String settings = '/settings';
   static const String backendStatus = '/backend-status';
   static const String history = '/history';
@@ -67,6 +70,23 @@ class AppRoutes {
         return MaterialPageRoute(
           settings: routeSettings,
           builder: (_) => const ScannerScreen(),
+        );
+      case processing:
+      case scanning:
+        return MaterialPageRoute(
+          settings: routeSettings,
+          builder: (context) => ProcessingScreen(
+            go: (target, {data}) {
+              if (target == 'ocr-review' || target == 'result') {
+                Navigator.of(context).pushReplacementNamed(
+                  historyDetail,
+                  arguments: kHistory.first,
+                );
+              } else if (target == 'home') {
+                Navigator.of(context).pushReplacementNamed(home);
+              }
+            },
+          ),
         );
       case login:
         return MaterialPageRoute(

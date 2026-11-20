@@ -46,9 +46,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           if (route == "home") {
             _onTabTapped(0);
           } else if (route == "processing") {
-            Navigator.of(
-              context,
-            ).pushNamed(AppRoutes.historyDetail, arguments: kHistory.first);
+            Navigator.of(context).pushNamed(AppRoutes.processing);
           }
         },
       ),

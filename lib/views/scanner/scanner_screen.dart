@@ -50,9 +50,7 @@ class _ScannerScreenState extends State<ScannerScreen>
         Navigator.of(context).maybePop();
       }
     } else if (target == "processing") {
-      Navigator.of(
-        context,
-      ).pushNamed(AppRoutes.historyDetail, arguments: kHistory.first);
+      Navigator.of(context).pushNamed(AppRoutes.processing);
     } else if (target == "manual-input") {
       _showManualInputDialog();
     }
