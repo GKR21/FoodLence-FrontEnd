@@ -75,7 +75,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     _runScanSimulation(isSafe: false);
                   }
                 },
-                onUploadImage: () => _runScanSimulation(isSafe: true),
+                onUploadImage: () {
+                  Navigator.of(context).pushNamed(AppRoutes.processing);
+                },
               ),
               const SizedBox(height: 24),
               _buildQuickActions(context),
