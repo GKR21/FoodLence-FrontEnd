@@ -69,7 +69,22 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           _onTabTapped(0);
         },
       ),
-      ProfileScreen(showBottomNav: false, onTabSelected: _onTabTapped),
+      ProfileScreen(
+        showBottomNav: false,
+        onTabSelected: _onTabTapped,
+        go: (screen, [args]) {
+          final target = screen.toLowerCase();
+          if (target == 'allergens') {
+            Navigator.of(context).pushNamed(AppRoutes.allergens);
+          } else if (target == 'login') {
+            Navigator.of(
+              context,
+            ).pushNamedAndRemoveUntil(AppRoutes.login, (route) => false);
+          } else {
+            Navigator.of(context).pushNamed(AppRoutes.settings);
+          }
+        },
+      ),
     ];
 
     // If on scanner screen, show full screen without bottom navigation bar

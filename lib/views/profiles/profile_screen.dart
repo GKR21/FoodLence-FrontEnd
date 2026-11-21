@@ -56,11 +56,21 @@ class ProfileScreen extends StatelessWidget {
       go!(screen, args);
       return;
     }
-    switch (screen) {
+    final target = screen.toLowerCase();
+    switch (target) {
       case 'allergens':
         Navigator.of(context).pushNamed(AppRoutes.allergens);
         break;
       case 'settings':
+      case 'language':
+      case 'languages':
+      case 'notifications':
+      case 'privacy':
+      case 'help':
+      case 'help & support':
+      case 'about':
+      case 'about foodlence':
+      case 'about foodlense':
         Navigator.of(context).pushNamed(AppRoutes.settings);
         break;
       case 'login':
@@ -181,19 +191,17 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: backgroundColor,
       body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    _buildProfileHeader(context),
-                    _buildMenuSection(context),
-                  ],
-                ),
-              ),
-            ),
-          ],
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(
+            parent: BouncingScrollPhysics(),
+          ),
+          child: Column(
+            children: [
+              _buildProfileHeader(context),
+              _buildMenuSection(context),
+              const SizedBox(height: 80),
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: showBottomNav

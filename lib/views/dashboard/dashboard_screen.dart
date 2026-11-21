@@ -61,6 +61,9 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(
+            parent: BouncingScrollPhysics(),
+          ),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -91,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
               _buildRecentScansSection(context),
               const SizedBox(height: 16),
               _buildOfflineBanner(),
-              const SizedBox(height: 20),
+              const SizedBox(height: 80),
             ],
           ),
         ),
