@@ -85,8 +85,10 @@ class ProfileScreen extends StatelessWidget {
   }
 
   void _showSwitchProfileModal(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     showModalBottomSheet(
       context: context,
+      backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -101,16 +103,19 @@ class ProfileScreen extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
+                    Text(
                       'Switch Profile',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF111827),
+                        color: isDark ? Colors.white : const Color(0xFF111827),
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.close),
+                      icon: Icon(
+                        Icons.close,
+                        color: isDark ? Colors.white : Colors.black,
+                      ),
                       onPressed: () => Navigator.of(context).pop(),
                     ),
                   ],
@@ -118,18 +123,40 @@ class ProfileScreen extends StatelessWidget {
                 const SizedBox(height: 12),
                 ListTile(
                   leading: _profileAvatar('H', primaryColor),
-                  title: const Text(
+                  title: Text(
                     'Heshan Perera (Active)',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: isDark ? Colors.white : const Color(0xFF111827),
+                    ),
                   ),
-                  subtitle: const Text('Peanuts, Tree Nuts, Gluten'),
+                  subtitle: Text(
+                    'Peanuts, Tree Nuts, Gluten',
+                    style: TextStyle(
+                      color: isDark
+                          ? const Color(0xFF94A3B8)
+                          : const Color(0xFF6B7280),
+                    ),
+                  ),
                   trailing: const Icon(Icons.check_circle, color: primaryColor),
                   onTap: () => Navigator.of(context).pop(),
                 ),
                 ListTile(
                   leading: _profileAvatar('S', const Color(0xFF3B82F6)),
-                  title: const Text('Sachini Perera'),
-                  subtitle: const Text('Dairy, Lactose, Shellfish'),
+                  title: Text(
+                    'Sachini Perera',
+                    style: TextStyle(
+                      color: isDark ? Colors.white : const Color(0xFF111827),
+                    ),
+                  ),
+                  subtitle: Text(
+                    'Dairy, Lactose, Shellfish',
+                    style: TextStyle(
+                      color: isDark
+                          ? const Color(0xFF94A3B8)
+                          : const Color(0xFF6B7280),
+                    ),
+                  ),
                   onTap: () {
                     Navigator.of(context).pop();
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -141,8 +168,20 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 ListTile(
                   leading: _profileAvatar('C', const Color(0xFF10B981)),
-                  title: const Text('Child Profile'),
-                  subtitle: const Text('Egg Whites, Cow Milk'),
+                  title: Text(
+                    'Child Profile',
+                    style: TextStyle(
+                      color: isDark ? Colors.white : const Color(0xFF111827),
+                    ),
+                  ),
+                  subtitle: Text(
+                    'Egg Whites, Cow Milk',
+                    style: TextStyle(
+                      color: isDark
+                          ? const Color(0xFF94A3B8)
+                          : const Color(0xFF6B7280),
+                    ),
+                  ),
                   onTap: () {
                     Navigator.of(context).pop();
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -188,8 +227,10 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: isDark ? const Color(0xFF0F172A) : backgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(
@@ -197,34 +238,34 @@ class ProfileScreen extends StatelessWidget {
           ),
           child: Column(
             children: [
-              _buildProfileHeader(context),
-              _buildMenuSection(context),
+              _buildProfileHeader(context, isDark),
+              _buildMenuSection(context, isDark),
               const SizedBox(height: 80),
             ],
           ),
         ),
       ),
       bottomNavigationBar: showBottomNav
-          ? _buildBottomNavigation(context)
+          ? _buildBottomNavigation(context, isDark)
           : null,
     );
   }
 
   // Profile Header
-  Widget _buildProfileHeader(BuildContext context) {
+  Widget _buildProfileHeader(BuildContext context, bool isDark) {
     return Container(
       width: double.infinity,
-      color: Colors.white,
+      color: isDark ? const Color(0xFF1E293B) : Colors.white,
       padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Profile',
             style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF111827),
+              color: isDark ? Colors.white : const Color(0xFF111827),
             ),
           ),
 
@@ -261,7 +302,12 @@ class ProfileScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: primaryColor,
                         shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 2),
+                        border: Border.all(
+                          color: isDark
+                              ? const Color(0xFF1E293B)
+                              : Colors.white,
+                          width: 2,
+                        ),
                       ),
                       child: const Icon(
                         Icons.edit,
@@ -279,20 +325,25 @@ class ProfileScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'Heshan Perera',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF111827),
+                        color: isDark ? Colors.white : const Color(0xFF111827),
                       ),
                     ),
 
                     const SizedBox(height: 4),
 
-                    const Text(
+                    Text(
                       'heshan@example.com',
-                      style: TextStyle(fontSize: 13, color: Color(0xFF6B7280)),
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: isDark
+                            ? const Color(0xFF94A3B8)
+                            : const Color(0xFF6B7280),
+                      ),
                     ),
 
                     const SizedBox(height: 10),
@@ -301,7 +352,9 @@ class ProfileScreen extends StatelessWidget {
                       children: [
                         _buildBadge(
                           '3 allergens',
-                          const Color(0xFFE8F5F2),
+                          isDark
+                              ? const Color(0xFF16A085).withValues(alpha: 0.2)
+                              : const Color(0xFFE8F5F2),
                           primaryColor,
                         ),
 
@@ -309,8 +362,12 @@ class ProfileScreen extends StatelessWidget {
 
                         _buildBadge(
                           '5 scans',
-                          const Color(0xFFF3F4F6),
-                          const Color(0xFF6B7280),
+                          isDark
+                              ? const Color(0xFF334155)
+                              : const Color(0xFFF3F4F6),
+                          isDark
+                              ? const Color(0xFFCBD5E1)
+                              : const Color(0xFF6B7280),
                         ),
                       ],
                     ),
@@ -332,9 +389,15 @@ class ProfileScreen extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                color: const Color(0xFFF9FAFB),
+                color: isDark
+                    ? const Color(0xFF0F172A)
+                    : const Color(0xFFF9FAFB),
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: const Color(0xFFE5E7EB)),
+                border: Border.all(
+                  color: isDark
+                      ? const Color(0xFF334155)
+                      : const Color(0xFFE5E7EB),
+                ),
               ),
               child: Row(
                 children: [
@@ -354,20 +417,22 @@ class ProfileScreen extends StatelessWidget {
 
                   const SizedBox(width: 8),
 
-                  const Expanded(
+                  Expanded(
                     child: Text(
                       'Switch Profile',
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
-                        color: Color(0xFF374151),
+                        color: isDark ? Colors.white : const Color(0xFF374151),
                       ),
                     ),
                   ),
 
-                  const Icon(
+                  Icon(
                     Icons.chevron_right,
-                    color: Color(0xFF9CA3AF),
+                    color: isDark
+                        ? const Color(0xFF64748B)
+                        : const Color(0xFF9CA3AF),
                     size: 20,
                   ),
                 ],
@@ -417,16 +482,20 @@ class ProfileScreen extends StatelessWidget {
   }
 
   // Menu Section
-  Widget _buildMenuSection(BuildContext context) {
+  Widget _buildMenuSection(BuildContext context, bool isDark) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 20),
       child: Column(
         children: [
           Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: isDark ? const Color(0xFF1E293B) : Colors.white,
               borderRadius: BorderRadius.circular(24),
-              border: Border.all(color: const Color(0xFFE5E7EB)),
+              border: Border.all(
+                color: isDark
+                    ? const Color(0xFF334155)
+                    : const Color(0xFFE5E7EB),
+              ),
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(24),
@@ -464,10 +533,12 @@ class ProfileScreen extends StatelessWidget {
                                   children: [
                                     Text(
                                       item['label'] as String,
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w600,
-                                        color: Color(0xFF111827),
+                                        color: isDark
+                                            ? Colors.white
+                                            : const Color(0xFF111827),
                                       ),
                                     ),
 
@@ -475,9 +546,11 @@ class ProfileScreen extends StatelessWidget {
                                       const SizedBox(height: 4),
                                       Text(
                                         item['sub'] as String,
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           fontSize: 12,
-                                          color: Color(0xFF9CA3AF),
+                                          color: isDark
+                                              ? const Color(0xFF94A3B8)
+                                              : const Color(0xFF9CA3AF),
                                         ),
                                       ),
                                     ],
@@ -485,10 +558,12 @@ class ProfileScreen extends StatelessWidget {
                                 ),
                               ),
 
-                              const Icon(
+                              Icon(
                                 Icons.chevron_right,
                                 size: 20,
-                                color: Color(0xFFD1D5DB),
+                                color: isDark
+                                    ? const Color(0xFF64748B)
+                                    : const Color(0xFFD1D5DB),
                               ),
                             ],
                           ),
@@ -496,10 +571,12 @@ class ProfileScreen extends StatelessWidget {
                       ),
 
                       if (index < menuItems.length - 1)
-                        const Divider(
+                        Divider(
                           height: 1,
                           thickness: 1,
-                          color: Color(0xFFF3F4F6),
+                          color: isDark
+                              ? const Color(0xFF334155)
+                              : const Color(0xFFF3F4F6),
                           indent: 20,
                           endIndent: 20,
                         ),
@@ -522,9 +599,13 @@ class ProfileScreen extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 17),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDark ? const Color(0xFF1E293B) : Colors.white,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: const Color(0xFFFEE2E2)),
+                border: Border.all(
+                  color: isDark
+                      ? const Color(0xFF7F1D1D)
+                      : const Color(0xFFFEE2E2),
+                ),
               ),
               child: const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -551,13 +632,14 @@ class ProfileScreen extends StatelessWidget {
   }
 
   // Bottom Navigation
-  Widget _buildBottomNavigation(BuildContext context) {
+  Widget _buildBottomNavigation(BuildContext context, bool isDark) {
     return BottomNavigationBar(
       currentIndex: 3,
       type: BottomNavigationBarType.fixed,
       selectedItemColor: primaryColor,
-      unselectedItemColor: const Color(0xFF9CA3AF),
-      backgroundColor: Colors.white,
+      unselectedItemColor:
+          isDark ? const Color(0xFF64748B) : const Color(0xFF9CA3AF),
+      backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
       onTap: (index) {
         if (onTabSelected != null) {
           onTabSelected!(index);

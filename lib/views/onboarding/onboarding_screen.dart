@@ -66,8 +66,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: isDark ? const Color(0xFF0F172A) : Colors.white,
       body: SafeArea(
         child: Column(
           children: [
@@ -111,18 +113,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     title: 'Scan Food Labels Instantly',
                     description:
                         'Capture an ingredient label and let FoodLense identify what\'s inside — no more guessing.',
+                    isDark: isDark,
                   ),
                   _buildPage(
                     illustration: _buildAllergenIllustration(),
                     title: 'Personalized Allergen\nDetection',
                     description:
                         'FoodLense compares ingredients against your personal allergen profile and alerts you instantly.',
+                    isDark: isDark,
                   ),
                   _buildPage(
                     illustration: _buildIngredientIllustration(),
                     title: 'Understand Every\nIngredient',
                     description:
                         'Learn what ingredients, additives and E-numbers mean before you consume them.',
+                    isDark: isDark,
                   ),
                 ],
               ),
@@ -141,7 +146,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   decoration: BoxDecoration(
                     color: isActive
                         ? const Color(0xFF16A085)
-                        : const Color(0xFFE2E8F0),
+                        : (isDark
+                            ? const Color(0xFF334155)
+                            : const Color(0xFFE2E8F0)),
                     borderRadius: BorderRadius.circular(3),
                   ),
                 );
@@ -183,14 +190,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               InkWell(
                 onTap: _goToLogin,
                 borderRadius: BorderRadius.circular(8),
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                   child: Text(
                     'I already have an account',
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
-                      color: Color(0xFF64748B),
+                      color: isDark
+                          ? const Color(0xFF94A3B8)
+                          : const Color(0xFF64748B),
                     ),
                   ),
                 ),
@@ -209,6 +219,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     required Widget illustration,
     required String title,
     required String description,
+    required bool isDark,
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 32),
@@ -220,10 +231,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           Text(
             title,
             textAlign: TextAlign.center,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF0F172A),
+              color: isDark ? Colors.white : const Color(0xFF0F172A),
               height: 1.25,
             ),
           ),
@@ -231,9 +242,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           Text(
             description,
             textAlign: TextAlign.center,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
-              color: Color(0xFF64748B),
+              color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
               height: 1.45,
             ),
           ),

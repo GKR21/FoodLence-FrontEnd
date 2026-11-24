@@ -57,6 +57,7 @@ class _AllergensScreenState extends State<AllergensScreen> {
   }
 
   void _showAddAllergenDialog() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final nameController = TextEditingController();
     String selectedSeverity = 'High';
     String selectedType = 'Confirmed allergy';
@@ -67,6 +68,7 @@ class _AllergensScreenState extends State<AllergensScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -85,16 +87,19 @@ class _AllergensScreenState extends State<AllergensScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                  Text(
                     'Add New Allergen',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF111827),
+                      color: isDark ? Colors.white : const Color(0xFF111827),
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.close),
+                    icon: Icon(
+                      Icons.close,
+                      color: isDark ? Colors.white : Colors.black,
+                    ),
                     onPressed: () => Navigator.of(ctx).pop(),
                   ),
                 ],
@@ -102,9 +107,22 @@ class _AllergensScreenState extends State<AllergensScreen> {
               const SizedBox(height: 16),
               TextField(
                 controller: nameController,
+                style: TextStyle(
+                  color: isDark ? Colors.white : const Color(0xFF111827),
+                ),
                 decoration: InputDecoration(
                   labelText: 'Allergen Name',
+                  labelStyle: TextStyle(
+                    color: isDark
+                        ? const Color(0xFF94A3B8)
+                        : const Color(0xFF6B7280),
+                  ),
                   hintText: 'e.g. Soy, Shellfish, Sesame',
+                  hintStyle: TextStyle(
+                    color: isDark
+                        ? const Color(0xFF64748B)
+                        : const Color(0xFF9CA3AF),
+                  ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -197,11 +215,13 @@ class _AllergensScreenState extends State<AllergensScreen> {
   }
 
   void _showEditDialog(int index) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final allergen = _myAllergens[index];
     String currentSeverity = allergen['severity'] as String;
 
     showModalBottomSheet(
       context: context,
+      backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -214,19 +234,21 @@ class _AllergensScreenState extends State<AllergensScreen> {
             children: [
               Text(
                 'Edit ${allergen['name']}',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF111827),
+                  color: isDark ? Colors.white : const Color(0xFF111827),
                 ),
               ),
               const SizedBox(height: 16),
-              const Text(
+              Text(
                 'Update Severity Level',
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF374151),
+                  color: isDark
+                      ? const Color(0xFF94A3B8)
+                      : const Color(0xFF374151),
                 ),
               ),
               const SizedBox(height: 10),
@@ -238,11 +260,15 @@ class _AllergensScreenState extends State<AllergensScreen> {
                     child: ChoiceChip(
                       label: Text(sev),
                       selected: isSelected,
-                      selectedColor: const Color(0xFFE8F5F2),
+                      selectedColor: isDark
+                          ? const Color(0xFF16A085).withValues(alpha: 0.25)
+                          : const Color(0xFFE8F5F2),
                       labelStyle: TextStyle(
                         color: isSelected
                             ? const Color(0xFF16A085)
-                            : const Color(0xFF374151),
+                            : (isDark
+                                ? Colors.white
+                                : const Color(0xFF374151)),
                         fontWeight: FontWeight.bold,
                       ),
                       onSelected: (_) =>
@@ -301,23 +327,25 @@ class _AllergensScreenState extends State<AllergensScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
       body: SafeArea(
         child: Column(
           children: [
             // Status bar
             Container(
               width: double.infinity,
-              color: Colors.white,
+              color: isDark ? const Color(0xFF1E293B) : Colors.white,
               padding: const EdgeInsets.symmetric(
                 horizontal: 20,
                 vertical: 8,
               ),
-              child: const Text(
+              child: Text(
                 '9:41',
                 style: TextStyle(
-                  color: Color(0xFF1F2937),
+                  color: isDark ? Colors.white : const Color(0xFF1F2937),
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -326,7 +354,7 @@ class _AllergensScreenState extends State<AllergensScreen> {
             // Header
             Container(
               width: double.infinity,
-              color: Colors.white,
+              color: isDark ? const Color(0xFF1E293B) : Colors.white,
               padding: const EdgeInsets.fromLTRB(24, 8, 24, 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -360,22 +388,24 @@ class _AllergensScreenState extends State<AllergensScreen> {
                   const SizedBox(height: 16),
 
                   // Title
-                  const Text(
+                  Text(
                     'My Allergens',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF111827),
+                      color: isDark ? Colors.white : const Color(0xFF111827),
                     ),
                   ),
 
                   const SizedBox(height: 4),
 
                   // Description
-                  const Text(
+                  Text(
                     'FoodLense uses this list when checking scanned products.',
                     style: TextStyle(
-                      color: Color(0xFF6B7280),
+                      color: isDark
+                          ? const Color(0xFF94A3B8)
+                          : const Color(0xFF6B7280),
                       fontSize: 13,
                     ),
                   ),
@@ -395,12 +425,12 @@ class _AllergensScreenState extends State<AllergensScreen> {
                     final allergen = _myAllergens[index];
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 12),
-                      child: _allergenCard(allergen, index),
+                      child: _allergenCard(allergen, index, isDark),
                     );
                   }),
 
                   // Empty state
-                  if (_myAllergens.isEmpty) _emptyState(),
+                  if (_myAllergens.isEmpty) _emptyState(isDark),
 
                   // Add allergen button
                   const SizedBox(height: 4),
@@ -410,7 +440,7 @@ class _AllergensScreenState extends State<AllergensScreen> {
             ),
 
             // Bottom navigation
-            widget.bottomNavigationBar ?? _buildBottomNavigation(),
+            widget.bottomNavigationBar ?? _buildBottomNavigation(isDark),
           ],
         ),
       ),
@@ -418,17 +448,21 @@ class _AllergensScreenState extends State<AllergensScreen> {
   }
 
   // Allergen card
-  Widget _allergenCard(Map<String, dynamic> allergen, int index) {
+  Widget _allergenCard(
+    Map<String, dynamic> allergen,
+    int index,
+    bool isDark,
+  ) {
     final severity = allergen['severity'] as String;
     final colors = _severityColors(severity);
 
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? const Color(0xFF1E293B) : Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: const Color(0xFFE5E7EB),
+          color: isDark ? const Color(0xFF334155) : const Color(0xFFE5E7EB),
         ),
       ),
       child: Column(
@@ -440,7 +474,9 @@ class _AllergensScreenState extends State<AllergensScreen> {
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF9FAFB),
+                  color: isDark
+                      ? const Color(0xFF0F172A)
+                      : const Color(0xFFF9FAFB),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 alignment: Alignment.center,
@@ -459,18 +495,20 @@ class _AllergensScreenState extends State<AllergensScreen> {
                   children: [
                     Text(
                       allergen['name'] as String,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF111827),
+                        color: isDark ? Colors.white : const Color(0xFF111827),
                       ),
                     ),
                     const SizedBox(height: 2),
                     Text(
                       allergen['type'] as String,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 12,
-                        color: Color(0xFF6B7280),
+                        color: isDark
+                            ? const Color(0xFF94A3B8)
+                            : const Color(0xFF6B7280),
                       ),
                     ),
                   ],
@@ -502,8 +540,8 @@ class _AllergensScreenState extends State<AllergensScreen> {
 
           // Divider
           const SizedBox(height: 12),
-          const Divider(
-            color: Color(0xFFF3F4F6),
+          Divider(
+            color: isDark ? const Color(0xFF334155) : const Color(0xFFF3F4F6),
             height: 1,
           ),
           const SizedBox(height: 12),
@@ -514,8 +552,12 @@ class _AllergensScreenState extends State<AllergensScreen> {
               Expanded(
                 child: _actionButton(
                   label: 'Edit',
-                  textColor: const Color(0xFF374151),
-                  borderColor: const Color(0xFFE5E7EB),
+                  textColor: isDark
+                      ? Colors.white
+                      : const Color(0xFF374151),
+                  borderColor: isDark
+                      ? const Color(0xFF475569)
+                      : const Color(0xFFE5E7EB),
                   onTap: () => _showEditDialog(index),
                 ),
               ),
@@ -526,7 +568,9 @@ class _AllergensScreenState extends State<AllergensScreen> {
                 child: _actionButton(
                   label: 'Remove',
                   textColor: const Color(0xFFDC2626),
-                  borderColor: const Color(0xFFFEE2E2),
+                  borderColor: isDark
+                      ? const Color(0xFF7F1D1D)
+                      : const Color(0xFFFEE2E2),
                   onTap: () => _removeAllergen(index),
                 ),
               ),
@@ -598,7 +642,7 @@ class _AllergensScreenState extends State<AllergensScreen> {
   }
 
   // Empty state
-  Widget _emptyState() {
+  Widget _emptyState(bool isDark) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 48),
       child: Column(
@@ -607,7 +651,7 @@ class _AllergensScreenState extends State<AllergensScreen> {
             width: 80,
             height: 80,
             decoration: BoxDecoration(
-              color: const Color(0xFFF3F4F6),
+              color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF3F4F6),
               borderRadius: BorderRadius.circular(24),
             ),
             alignment: Alignment.center,
@@ -619,23 +663,23 @@ class _AllergensScreenState extends State<AllergensScreen> {
 
           const SizedBox(height: 16),
 
-          const Text(
+          Text(
             'No allergens added',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF374151),
+              color: isDark ? Colors.white : const Color(0xFF374151),
             ),
           ),
 
           const SizedBox(height: 8),
 
-          const Text(
+          Text(
             'Add allergens to receive personalised ingredient warnings.',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 13,
-              color: Color(0xFF9CA3AF),
+              color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF9CA3AF),
             ),
           ),
 
@@ -677,11 +721,17 @@ class _AllergensScreenState extends State<AllergensScreen> {
   }
 
   // Bottom navigation matching screenshot
-  Widget _buildBottomNavigation() {
+  Widget _buildBottomNavigation(bool isDark) {
     return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+        border: Border(
+          top: BorderSide(
+            color: isDark ? const Color(0xFF334155) : const Color(0xFFE5E7EB),
+            width: 1,
+          ),
+        ),
+        boxShadow: const [
           BoxShadow(
             color: Color(0x0C000000),
             blurRadius: 12,

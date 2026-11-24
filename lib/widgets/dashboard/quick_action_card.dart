@@ -15,6 +15,7 @@ class QuickActionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Expanded(
       child: InkWell(
         onTap: onTap,
@@ -22,14 +23,18 @@ class QuickActionCard extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 6),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: isDark ? const Color(0xFF1E293B) : Colors.white,
             borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: const Color(0xFFE5E7EB)),
-            boxShadow: const [
+            border: Border.all(
+              color: isDark ? const Color(0xFF334155) : const Color(0xFFE5E7EB),
+            ),
+            boxShadow: [
               BoxShadow(
-                color: Color(0x06000000),
+                color: isDark
+                    ? Colors.black.withValues(alpha: 0.2)
+                    : const Color(0x06000000),
                 blurRadius: 4,
-                offset: Offset(0, 2),
+                offset: const Offset(0, 2),
               ),
             ],
           ),
@@ -42,10 +47,10 @@ class QuickActionCard extends StatelessWidget {
               Text(
                 title,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF1F2937),
+                  color: isDark ? Colors.white : const Color(0xFF1F2937),
                   height: 1.2,
                 ),
                 maxLines: 2,

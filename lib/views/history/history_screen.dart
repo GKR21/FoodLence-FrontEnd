@@ -48,18 +48,19 @@ class _HistoryListScreenState extends State<HistoryListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final items = _filtered;
 
     return Scaffold(
-      backgroundColor: AppColors.surfaceSlate,
+      backgroundColor: isDark ? const Color(0xFF0F172A) : AppColors.surfaceSlate,
       bottomNavigationBar: widget.bottomNavigationBar,
       body: SafeArea(
         child: Column(
           children: [
-            _buildHeader(),
+            _buildHeader(isDark),
             Expanded(
               child: items.isEmpty
-                  ? _buildEmptyState()
+                  ? _buildEmptyState(isDark)
                   : ListView.separated(
                       padding: const EdgeInsets.all(16),
                       itemCount: items.length,
@@ -67,6 +68,7 @@ class _HistoryListScreenState extends State<HistoryListScreen> {
                       itemBuilder: (_, i) => _HistoryTile(
                         item: items[i],
                         onTap: () => widget.onItemTap(items[i]),
+                        isDark: isDark,
                       ),
                     ),
             ),
@@ -76,13 +78,13 @@ class _HistoryListScreenState extends State<HistoryListScreen> {
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(bool isDark) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(24, 8, 24, 16),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+        boxShadow: const [
           BoxShadow(
             color: Color(0x0D000000),
             blurRadius: 3,
@@ -93,12 +95,12 @@ class _HistoryListScreenState extends State<HistoryListScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Scan History',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF111827),
+              color: isDark ? Colors.white : const Color(0xFF111827),
             ),
           ),
           const SizedBox(height: 16),
@@ -107,27 +109,44 @@ class _HistoryListScreenState extends State<HistoryListScreen> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             decoration: BoxDecoration(
-              color: const Color(0xFFF9FAFB),
+              color: isDark
+                  ? const Color(0xFF0F172A)
+                  : const Color(0xFFF9FAFB),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: const Color(0xFFE5E7EB)),
+              border: Border.all(
+                color: isDark
+                    ? const Color(0xFF334155)
+                    : const Color(0xFFE5E7EB),
+              ),
             ),
             child: Row(
               children: [
-                const Icon(Icons.search, size: 18, color: Color(0xFF9CA3AF)),
+                Icon(
+                  Icons.search,
+                  size: 18,
+                  color: isDark
+                      ? const Color(0xFF64748B)
+                      : const Color(0xFF9CA3AF),
+                ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: TextField(
                     onChanged: (v) => setState(() => _search = v),
                     cursorColor: _teal,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
-                      color: Color(0xFF111827),
+                      color: isDark ? Colors.white : const Color(0xFF111827),
                     ),
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       hintText: 'Search scans...',
-                      hintStyle: TextStyle(color: Color(0xFF9CA3AF)),
+                      hintStyle: TextStyle(
+                        color: isDark
+                            ? const Color(0xFF64748B)
+                            : const Color(0xFF9CA3AF),
+                      ),
                       border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(vertical: 12),
+                      contentPadding:
+                          const EdgeInsets.symmetric(vertical: 12),
                     ),
                   ),
                 ),
@@ -152,7 +171,11 @@ class _HistoryListScreenState extends State<HistoryListScreen> {
                       vertical: 6,
                     ),
                     decoration: BoxDecoration(
-                      color: selected ? _teal : const Color(0xFFF3F4F6),
+                      color: selected
+                          ? _teal
+                          : (isDark
+                              ? const Color(0xFF334155)
+                              : const Color(0xFFF3F4F6)),
                       borderRadius: BorderRadius.circular(999),
                     ),
                     child: Text(
@@ -162,7 +185,9 @@ class _HistoryListScreenState extends State<HistoryListScreen> {
                         fontWeight: FontWeight.w600,
                         color: selected
                             ? Colors.white
-                            : const Color(0xFF6B7280),
+                            : (isDark
+                                ? const Color(0xFFCBD5E1)
+                                : const Color(0xFF6B7280)),
                       ),
                     ),
                   ),
@@ -175,7 +200,7 @@ class _HistoryListScreenState extends State<HistoryListScreen> {
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(bool isDark) {
     return Center(
       child: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 32),
@@ -186,32 +211,38 @@ class _HistoryListScreenState extends State<HistoryListScreen> {
               width: 80,
               height: 80,
               decoration: BoxDecoration(
-                color: const Color(0xFFF3F4F6),
+                color: isDark
+                    ? const Color(0xFF1E293B)
+                    : const Color(0xFFF3F4F6),
                 borderRadius: BorderRadius.circular(24),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.access_time,
                 size: 32,
-                color: Color(0xFFD1D5DB),
+                color: isDark
+                    ? const Color(0xFF64748B)
+                    : const Color(0xFFD1D5DB),
               ),
             ),
             const SizedBox(height: 16),
-            const Text(
+            Text(
               'No scans yet',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF374151),
+                color: isDark ? Colors.white : const Color(0xFF374151),
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
+            Text(
               'Scan your first food label to see results here.',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 13,
                 height: 1.6,
-                color: Color(0xFF9CA3AF),
+                color: isDark
+                    ? const Color(0xFF94A3B8)
+                    : const Color(0xFF9CA3AF),
               ),
             ),
             const SizedBox(height: 24),
@@ -253,8 +284,13 @@ class _HistoryListScreenState extends State<HistoryListScreen> {
 class _HistoryTile extends StatefulWidget {
   final ScanItem item;
   final VoidCallback onTap;
+  final bool isDark;
 
-  const _HistoryTile({required this.item, required this.onTap});
+  const _HistoryTile({
+    required this.item,
+    required this.onTap,
+    this.isDark = false,
+  });
 
   @override
   State<_HistoryTile> createState() => _HistoryTileState();
@@ -267,6 +303,7 @@ class _HistoryTileState extends State<_HistoryTile> {
   Widget build(BuildContext context) {
     final item = widget.item;
     final v = item.verdict;
+    final isDark = widget.isDark;
 
     return GestureDetector(
       onTapDown: (_) => setState(() => _pressed = true),
@@ -279,9 +316,11 @@ class _HistoryTileState extends State<_HistoryTile> {
         child: Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: isDark ? const Color(0xFF1E293B) : Colors.white,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: const Color(0xFFE5E7EB)),
+            border: Border.all(
+              color: isDark ? const Color(0xFF334155) : const Color(0xFFE5E7EB),
+            ),
           ),
           child: Row(
             children: [
@@ -299,10 +338,14 @@ class _HistoryTileState extends State<_HistoryTile> {
                       errorBuilder: (_, _, _) => Container(
                         width: 56,
                         height: 56,
-                        color: const Color(0xFFF3F4F6),
-                        child: const Icon(
+                        color: isDark
+                            ? const Color(0xFF334155)
+                            : const Color(0xFFF3F4F6),
+                        child: Icon(
                           Icons.fastfood,
-                          color: Color(0xFFD1D5DB),
+                          color: isDark
+                              ? const Color(0xFF94A3B8)
+                              : const Color(0xFFD1D5DB),
                         ),
                       ),
                     ),
@@ -316,7 +359,12 @@ class _HistoryTileState extends State<_HistoryTile> {
                       decoration: BoxDecoration(
                         color: v.dot,
                         shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 2),
+                        border: Border.all(
+                          color: isDark
+                              ? const Color(0xFF1E293B)
+                              : Colors.white,
+                          width: 2,
+                        ),
                       ),
                     ),
                   ),
@@ -333,18 +381,20 @@ class _HistoryTileState extends State<_HistoryTile> {
                       item.name,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
-                        color: Color(0xFF111827),
+                        color: isDark ? Colors.white : const Color(0xFF111827),
                       ),
                     ),
                     const SizedBox(height: 2),
                     Text(
                       item.date,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 12,
-                        color: Color(0xFF9CA3AF),
+                        color: isDark
+                            ? const Color(0xFF94A3B8)
+                            : const Color(0xFF9CA3AF),
                       ),
                     ),
                     const SizedBox(height: 6),
@@ -370,10 +420,12 @@ class _HistoryTileState extends State<_HistoryTile> {
                 ),
               ),
 
-              const Icon(
+              Icon(
                 Icons.chevron_right,
                 size: 20,
-                color: Color(0xFFD1D5DB),
+                color: isDark
+                    ? const Color(0xFF64748B)
+                    : const Color(0xFFD1D5DB),
               ),
             ],
           ),
