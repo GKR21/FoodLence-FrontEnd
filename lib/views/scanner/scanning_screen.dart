@@ -93,8 +93,7 @@ class _ProcessingScreenState extends State<ProcessingScreen>
             widget.go!('ocr-review');
           } else {
             Navigator.of(context).pushReplacementNamed(
-              AppRoutes.historyDetail,
-              arguments: kHistory.first,
+              AppRoutes.ocrReview,
             );
           }
         }
@@ -116,8 +115,10 @@ class _ProcessingScreenState extends State<ProcessingScreen>
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: isDark ? const Color(0xFF0F172A) : Colors.white,
       body: SafeArea(
         child: Center(
           child: Padding(
@@ -126,27 +127,29 @@ class _ProcessingScreenState extends State<ProcessingScreen>
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // Animated scanner icon
-                _scannerAnimation(),
+                _scannerAnimation(isDark),
 
                 const SizedBox(height: 40),
 
                 // Title
-                const Text(
+                Text(
                   'Analysing Label',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF111827),
+                    color: isDark ? Colors.white : const Color(0xFF111827),
                   ),
                 ),
 
                 const SizedBox(height: 8),
 
                 // Subtitle
-                const Text(
+                Text(
                   'This usually takes a few seconds.',
                   style: TextStyle(
-                    color: Color(0xFF9CA3AF),
+                    color: isDark
+                        ? const Color(0xFF94A3B8)
+                        : const Color(0xFF9CA3AF),
                     fontSize: 13,
                   ),
                 ),
@@ -159,7 +162,7 @@ class _ProcessingScreenState extends State<ProcessingScreen>
                   child: Column(
                     children: List.generate(
                       steps.length,
-                      (index) => _stepItem(index),
+                      (index) => _stepItem(index, isDark),
                     ),
                   ),
                 ),
@@ -172,7 +175,7 @@ class _ProcessingScreenState extends State<ProcessingScreen>
   }
 
   // Scanner with pulse rings
-  Widget _scannerAnimation() {
+  Widget _scannerAnimation(bool isDark) {
     return SizedBox(
       width: 128,
       height: 128,
@@ -229,7 +232,7 @@ class _ProcessingScreenState extends State<ProcessingScreen>
             width: 128,
             height: 128,
             decoration: BoxDecoration(
-              color: const Color(0xFFE8F5F2),
+              color: isDark ? const Color(0xFF1E293B) : const Color(0xFFE8F5F2),
               borderRadius: BorderRadius.circular(24),
             ),
             alignment: Alignment.center,
@@ -279,7 +282,7 @@ class _ProcessingScreenState extends State<ProcessingScreen>
   }
 
   // Processing step
-  Widget _stepItem(int index) {
+  Widget _stepItem(int index, bool isDark) {
     final bool done = completed.contains(index);
     final bool isActive = active == index && !done;
 
@@ -302,7 +305,9 @@ class _ProcessingScreenState extends State<ProcessingScreen>
                   : Border.all(
                       color: isActive
                           ? const Color(0xFF16A085)
-                          : const Color(0xFFE5E7EB),
+                          : (isDark
+                              ? const Color(0xFF334155)
+                              : const Color(0xFFE5E7EB)),
                       width: 2,
                     ),
             ),
@@ -318,9 +323,11 @@ class _ProcessingScreenState extends State<ProcessingScreen>
                       : Container(
                           width: 8,
                           height: 8,
-                          decoration: const BoxDecoration(
+                          decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: Color(0xFFE5E7EB),
+                            color: isDark
+                                ? const Color(0xFF334155)
+                                : const Color(0xFFE5E7EB),
                           ),
                         ),
             ),
@@ -337,8 +344,10 @@ class _ProcessingScreenState extends State<ProcessingScreen>
               color: done
                   ? const Color(0xFF16A085)
                   : isActive
-                      ? const Color(0xFF111827)
-                      : const Color(0xFFD1D5DB),
+                      ? (isDark ? Colors.white : const Color(0xFF111827))
+                      : (isDark
+                          ? const Color(0xFF64748B)
+                          : const Color(0xFFD1D5DB)),
             ),
             child: Text(
               '${steps[index]}${done ? " ✓" : isActive ? "..." : ""}',

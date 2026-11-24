@@ -57,8 +57,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: isDark ? const Color(0xFF0F172A) : Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(
@@ -68,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildTopHeader(context),
+              _buildTopHeader(context, isDark),
               const SizedBox(height: 20),
               SafetySummaryCard(
                 onScanNow: () {
@@ -83,7 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
               const SizedBox(height: 24),
-              _buildQuickActions(context),
+              _buildQuickActions(context, isDark),
               const SizedBox(height: 24),
               if (_isAnalyzing)
                 _buildAnalysisLoading()
@@ -91,9 +93,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 _buildSimulationResultCard(_simulatedResult!),
                 const SizedBox(height: 20),
               ],
-              _buildRecentScansSection(context),
+              _buildRecentScansSection(context, isDark),
               const SizedBox(height: 16),
-              _buildOfflineBanner(),
+              _buildOfflineBanner(isDark),
               const SizedBox(height: 80),
             ],
           ),
@@ -103,41 +105,44 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   // Top Header with greeting, name, active profile and right side action buttons
-  Widget _buildTopHeader(BuildContext context) {
+  Widget _buildTopHeader(BuildContext context, bool isDark) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'Good morning 👋',
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
-                color: Color(0xFF6B7280),
+                color:
+                    isDark ? const Color(0xFF94A3B8) : const Color(0xFF6B7280),
               ),
             ),
             const SizedBox(height: 2),
-            const Text(
+            Text(
               'Heshan',
               style: TextStyle(
                 fontSize: 26,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF111827),
+                color: isDark ? Colors.white : const Color(0xFF111827),
                 letterSpacing: -0.5,
               ),
             ),
             const SizedBox(height: 2),
             RichText(
-              text: const TextSpan(
+              text: TextSpan(
                 text: 'Scanning for: ',
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w400,
-                  color: Color(0xFF9CA3AF),
+                  color: isDark
+                      ? const Color(0xFF94A3B8)
+                      : const Color(0xFF9CA3AF),
                 ),
-                children: [
+                children: const [
                   TextSpan(
                     text: 'Heshan',
                     style: TextStyle(
@@ -160,14 +165,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 Container(
                   width: 44,
                   height: 44,
-                  decoration: const BoxDecoration(
-                    color: Color(0xFFF3F4F6),
+                  decoration: BoxDecoration(
+                    color: isDark
+                        ? const Color(0xFF1E293B)
+                        : const Color(0xFFF3F4F6),
                     shape: BoxShape.circle,
                   ),
                   child: IconButton(
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.notifications_none,
-                      color: Color(0xFF374151),
+                      color: isDark ? Colors.white : const Color(0xFF374151),
                       size: 22,
                     ),
                     onPressed: () {
@@ -231,16 +238,16 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   // Quick Actions: My Allergens, Search, Scan History, Learn
-  Widget _buildQuickActions(BuildContext context) {
+  Widget _buildQuickActions(BuildContext context, bool isDark) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Quick Actions',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
-            color: Color(0xFF111827),
+            color: isDark ? Colors.white : const Color(0xFF111827),
           ),
         ),
         const SizedBox(height: 12),
@@ -340,7 +347,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   // Recent Scans Section with "See all" header
-  Widget _buildRecentScansSection(BuildContext context) {
+  Widget _buildRecentScansSection(BuildContext context, bool isDark) {
     final recentItems = kHistory.take(3).toList();
 
     return Column(
@@ -349,12 +356,12 @@ class _HomeScreenState extends State<HomeScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
+            Text(
               'Recent Scans',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF111827),
+                color: isDark ? Colors.white : const Color(0xFF111827),
               ),
             ),
             InkWell(
@@ -387,7 +394,7 @@ class _HomeScreenState extends State<HomeScreen> {
           separatorBuilder: (_, _) => const SizedBox(height: 10),
           itemBuilder: (context, index) {
             final item = recentItems[index];
-            return _buildRecentScanTile(context, item);
+            return _buildRecentScanTile(context, item, isDark);
           },
         ),
       ],
@@ -395,7 +402,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   // Individual recent scan card matching screenshot
-  Widget _buildRecentScanTile(BuildContext context, ScanItem item) {
+  Widget _buildRecentScanTile(BuildContext context, ScanItem item, bool isDark) {
     return InkWell(
       onTap: () {
         Navigator.of(
@@ -406,9 +413,11 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: isDark ? const Color(0xFF1E293B) : Colors.white,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: const Color(0xFFE5E7EB)),
+          border: Border.all(
+            color: isDark ? const Color(0xFF334155) : const Color(0xFFE5E7EB),
+          ),
         ),
         child: Row(
           children: [
@@ -424,12 +433,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   width: 48,
                   height: 48,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF3F4F6),
+                    color: isDark
+                        ? const Color(0xFF334155)
+                        : const Color(0xFFF3F4F6),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.fastfood_outlined,
-                    color: Color(0xFF9CA3AF),
+                    color: isDark
+                        ? const Color(0xFF94A3B8)
+                        : const Color(0xFF9CA3AF),
                     size: 24,
                   ),
                 ),
@@ -443,10 +456,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Text(
                     item.name,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF111827),
+                      color: isDark ? Colors.white : const Color(0xFF111827),
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -454,9 +467,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 4),
                   Text(
                     item.date,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 12,
-                      color: Color(0xFF6B7280),
+                      color: isDark
+                          ? const Color(0xFF94A3B8)
+                          : const Color(0xFF6B7280),
                     ),
                   ),
                 ],
@@ -505,24 +520,29 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   // Offline mode alert banner from Screenshot 2
-  Widget _buildOfflineBanner() {
+  Widget _buildOfflineBanner(bool isDark) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFF7ED),
+        color: isDark ? const Color(0xFF1E293B) : const Color(0xFFFFF7ED),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFFFEDD5)),
+        border: Border.all(
+          color: isDark
+              ? const Color(0xFFEA580C).withValues(alpha: 0.3)
+              : const Color(0xFFFFEDD5),
+        ),
       ),
-      child: const Row(
+      child: Row(
         children: [
-          Icon(Icons.wifi_off_rounded, color: Color(0xFFEA580C), size: 20),
-          SizedBox(width: 12),
+          const Icon(Icons.wifi_off_rounded, color: Color(0xFFEA580C), size: 20),
+          const SizedBox(width: 12),
           Expanded(
             child: Text(
               'Offline mode — analysis requires internet',
               style: TextStyle(
-                color: Color(0xFF9A3412),
+                color:
+                    isDark ? const Color(0xFFFDBA74) : const Color(0xFF9A3412),
                 fontSize: 13,
                 fontWeight: FontWeight.w500,
               ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:foodlence/config/app_routes.dart';
+import 'package:foodlence/config/app_theme.dart';
 import 'package:foodlence/models/scan_model.dart';
 import 'package:foodlence/views/dashboard/dashboard_screen.dart';
 import 'package:foodlence/views/history/history_detail_screen.dart';
@@ -87,28 +88,37 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       ),
     ];
 
+    final isDark = AppTheme.isDark(context);
+    final bgColor = isDark ? const Color(0xFF0F172A) : Colors.white;
+
     // If on scanner screen, show full screen without bottom navigation bar
     if (_currentIndex == 1) {
       return Scaffold(body: pages[1]);
     }
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: bgColor,
       body: IndexedStack(index: _currentIndex, children: pages),
-      bottomNavigationBar: _buildCustomBottomNavigationBar(),
+      bottomNavigationBar: _buildCustomBottomNavigationBar(isDark),
     );
   }
 
   // Custom Bottom Navigation Bar matching the provided screenshots
-  Widget _buildCustomBottomNavigationBar() {
+  Widget _buildCustomBottomNavigationBar(bool isDark) {
     return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+        border: Border(
+          top: BorderSide(
+            color: isDark ? const Color(0xFF334155) : const Color(0xFFE5E7EB),
+            width: 1,
+          ),
+        ),
         boxShadow: [
           BoxShadow(
-            color: Color(0x0C000000),
+            color: isDark ? const Color(0x33000000) : const Color(0x0C000000),
             blurRadius: 12,
-            offset: Offset(0, -3),
+            offset: const Offset(0, -3),
           ),
         ],
       ),
@@ -120,16 +130,22 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               // 0: Home Tab
-              _buildNavItem(index: 0, icon: Icons.home_rounded, label: 'Home'),
+              _buildNavItem(
+                index: 0,
+                icon: Icons.home_rounded,
+                label: 'Home',
+                isDark: isDark,
+              ),
 
               // 1: Scan Tab (Raised circular teal button)
-              _buildRaisedScanButton(),
+              _buildRaisedScanButton(isDark),
 
               // 2: History Tab
               _buildNavItem(
                 index: 2,
                 icon: Icons.access_time_rounded,
                 label: 'History',
+                isDark: isDark,
               ),
 
               // 3: Profile Tab
@@ -137,6 +153,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                 index: 3,
                 icon: Icons.person_outline_rounded,
                 label: 'Profile',
+                isDark: isDark,
               ),
             ],
           ),
@@ -149,10 +166,12 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     required int index,
     required IconData icon,
     required String label,
+    bool isDark = false,
   }) {
     final isSelected = _currentIndex == index;
     const activeColor = Color(0xFF16A085);
-    const inactiveColor = Color(0xFF9CA3AF);
+    final inactiveColor =
+        isDark ? const Color(0xFF94A3B8) : const Color(0xFF9CA3AF);
 
     return InkWell(
       onTap: () => _onTabTapped(index),
@@ -184,7 +203,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   }
 
   // Raised Circular Center "Scan" Button matching screenshots
-  Widget _buildRaisedScanButton() {
+  Widget _buildRaisedScanButton(bool isDark) {
     return InkWell(
       onTap: () => _onTabTapped(1),
       borderRadius: BorderRadius.circular(30),
@@ -217,12 +236,13 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           ),
           Transform.translate(
             offset: const Offset(0, -6),
-            child: const Text(
+            child: Text(
               'Scan',
               style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.w500,
-                color: Color(0xFF6B7280),
+                color:
+                    isDark ? const Color(0xFF94A3B8) : const Color(0xFF6B7280),
               ),
             ),
           ),

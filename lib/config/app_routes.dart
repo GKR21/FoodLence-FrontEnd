@@ -8,6 +8,7 @@ import 'package:foodlence/views/history/history_screen.dart';
 import 'package:foodlence/views/onboarding/onboarding_screen.dart';
 import 'package:foodlence/views/profiles/allergens_screen.dart';
 import 'package:foodlence/views/profiles/profile_screen.dart';
+import 'package:foodlence/views/scanner/image_preview_screen.dart';
 import 'package:foodlence/views/scanner/scanner_screen.dart';
 import 'package:foodlence/views/scanner/scanning_screen.dart';
 import 'package:foodlence/views/settings/settings_screen.dart';
@@ -31,6 +32,8 @@ class AppRoutes {
   static const String scanner = '/scanner';
   static const String scanning = '/scanning';
   static const String processing = '/processing';
+  static const String ocrReview = '/ocr-review';
+  static const String imagePreview = '/image-preview';
   static const String settings = '/settings';
   static const String backendStatus = '/backend-status';
   static const String history = '/history';
@@ -77,13 +80,34 @@ class AppRoutes {
           settings: routeSettings,
           builder: (context) => ProcessingScreen(
             go: (target, {data}) {
-              if (target == 'ocr-review' || target == 'result') {
+              if (target == 'ocr-review') {
+                Navigator.of(context).pushReplacementNamed(ocrReview);
+              } else if (target == 'result') {
                 Navigator.of(context).pushReplacementNamed(
                   historyDetail,
                   arguments: kHistory.first,
                 );
               } else if (target == 'home') {
                 Navigator.of(context).pushReplacementNamed(home);
+              }
+            },
+          ),
+        );
+      case ocrReview:
+      case imagePreview:
+        return MaterialPageRoute(
+          settings: routeSettings,
+          builder: (context) => OCRReviewScreen(
+            go: (target, data) {
+              if (target == "scanner") {
+                Navigator.of(context).pushReplacementNamed(home);
+              } else if (target == "result") {
+                Navigator.of(context).pushReplacementNamed(
+                  historyDetail,
+                  arguments: kHistory.first,
+                );
+              } else {
+                Navigator.of(context).maybePop();
               }
             },
           ),
