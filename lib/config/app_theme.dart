@@ -25,34 +25,111 @@ class AppTheme {
   }
 
   static ThemeData get lightTheme {
-    return ThemeData(
-      useMaterial3: true,
+    return _buildTheme(
       brightness: Brightness.light,
-      scaffoldBackgroundColor: const Color(0xFFF8FAFC),
-      cardColor: Colors.white,
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: AppColors.primaryGreen,
-        brightness: Brightness.light,
-        primary: AppColors.primaryGreen,
-        surface: Colors.white,
-      ),
-      fontFamily: 'Roboto',
+      background: AppColors.background,
+      surface: Colors.white,
+      outline: AppColors.border,
+      inputFill: AppColors.fill,
     );
   }
 
   static ThemeData get darkTheme {
+    return _buildTheme(
+      brightness: Brightness.dark,
+      background: const Color(0xFF0F172A),
+      surface: const Color(0xFF1E293B),
+      outline: const Color(0xFF334155),
+      inputFill: const Color(0xFF0F172A),
+    );
+  }
+
+  static ThemeData _buildTheme({
+    required Brightness brightness,
+    required Color background,
+    required Color surface,
+    required Color outline,
+    required Color inputFill,
+  }) {
+    final isDark = brightness == Brightness.dark;
+    final scheme = ColorScheme.fromSeed(
+      seedColor: AppColors.teal,
+      brightness: brightness,
+      primary: AppColors.teal,
+      surface: surface,
+    );
+    final foreground = isDark ? Colors.white : AppColors.textDark;
+
     return ThemeData(
       useMaterial3: true,
-      brightness: Brightness.dark,
-      scaffoldBackgroundColor: const Color(0xFF0F172A),
-      cardColor: const Color(0xFF1E293B),
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: AppColors.primaryGreen,
-        brightness: Brightness.dark,
-        primary: AppColors.primaryGreen,
-        surface: const Color(0xFF1E293B),
-      ),
+      brightness: brightness,
+      scaffoldBackgroundColor: background,
+      cardColor: surface,
+      colorScheme: scheme,
       fontFamily: 'Roboto',
+      appBarTheme: AppBarTheme(
+        backgroundColor: surface,
+        foregroundColor: foreground,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        titleTextStyle: TextStyle(
+          color: foreground,
+          fontSize: 20,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+      cardTheme: CardThemeData(
+        color: surface,
+        elevation: 0,
+        margin: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+          side: BorderSide(color: outline),
+        ),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: inputFill,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: outline),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: outline),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(color: AppColors.teal, width: 1.5),
+        ),
+      ),
+      filledButtonTheme: FilledButtonThemeData(
+        style: FilledButton.styleFrom(
+          minimumSize: const Size(48, 48),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          minimumSize: const Size(48, 48),
+          side: BorderSide(color: outline),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+        ),
+      ),
+      snackBarTheme: SnackBarThemeData(
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: isDark ? const Color(0xFF334155) : AppColors.textDark,
+        contentTextStyle: const TextStyle(color: Colors.white),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      ),
     );
   }
 }
