@@ -47,8 +47,8 @@ class _OCRReviewScreenState extends State<OCRReviewScreen> {
       Navigator.of(context).pushReplacementNamed(AppRoutes.home);
     } else if (target == "result") {
       Navigator.of(context).pushReplacementNamed(
-        AppRoutes.historyDetail,
-        arguments: kHistory.first,
+        AppRoutes.result,
+        arguments: data?["resultType"] ?? "unsafe",
       );
     } else {
       Navigator.of(context).maybePop();
