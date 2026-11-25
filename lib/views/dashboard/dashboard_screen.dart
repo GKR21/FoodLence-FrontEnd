@@ -106,127 +106,128 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // Top Header with greeting, name, active profile and right side action buttons
   Widget _buildTopHeader(BuildContext context, bool isDark) {
+    final hour = TimeOfDay.now().hour;
+    final greeting = hour < 12
+        ? 'Good morning'
+        : hour < 17
+        ? 'Good afternoon'
+        : 'Good evening';
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Good morning 👋',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color:
-                    isDark ? const Color(0xFF94A3B8) : const Color(0xFF6B7280),
-              ),
-            ),
-            const SizedBox(height: 2),
-            Text(
-              'Heshan',
-              style: TextStyle(
-                fontSize: 26,
-                fontWeight: FontWeight.bold,
-                color: isDark ? Colors.white : const Color(0xFF111827),
-                letterSpacing: -0.5,
-              ),
-            ),
-            const SizedBox(height: 2),
-            RichText(
-              text: TextSpan(
-                text: 'Scanning for: ',
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '$greeting 👋',
                 style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w400,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
                   color: isDark
                       ? const Color(0xFF94A3B8)
-                      : const Color(0xFF9CA3AF),
+                      : const Color(0xFF6B7280),
                 ),
-                children: const [
-                  TextSpan(
-                    text: 'Heshan',
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFF16A085),
-                    ),
-                  ),
-                ],
               ),
-            ),
-          ],
+              const SizedBox(height: 2),
+              Text(
+                'Heshan',
+                style: TextStyle(
+                  fontSize: 26,
+                  fontWeight: FontWeight.bold,
+                  color: isDark ? Colors.white : const Color(0xFF111827),
+                  letterSpacing: -0.5,
+                ),
+              ),
+              const SizedBox(height: 2),
+              RichText(
+                text: TextSpan(
+                  text: 'Scanning for: ',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w400,
+                    color: isDark
+                        ? const Color(0xFF94A3B8)
+                        : const Color(0xFF9CA3AF),
+                  ),
+                  children: const [
+                    TextSpan(
+                      text: 'Heshan',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF16A085),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
+        const SizedBox(width: 8),
         Row(
           children: [
-            // Notification bell with red badge dot
-            Stack(
-              clipBehavior: Clip.none,
-              children: [
-                Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color: isDark
-                        ? const Color(0xFF1E293B)
-                        : const Color(0xFFF3F4F6),
-                    shape: BoxShape.circle,
-                  ),
-                  child: IconButton(
-                    icon: Icon(
-                      Icons.notifications_none,
-                      color: isDark ? Colors.white : const Color(0xFF374151),
-                      size: 22,
-                    ),
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('No new allergen alert notifications.'),
-                          duration: Duration(seconds: 2),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                Positioned(
-                  top: 9,
-                  right: 11,
-                  child: Container(
-                    width: 9,
-                    height: 9,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFEF4444),
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white, width: 1.5),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(width: 12),
-            // User Avatar circle 'H'
-            InkWell(
-              onTap: () {
-                if (widget.onOpenProfile != null) {
-                  widget.onOpenProfile!();
-                } else {
-                  Navigator.of(context).pushNamed(AppRoutes.profiles);
-                }
-              },
-              borderRadius: BorderRadius.circular(22),
+            Semantics(
+              button: true,
+              label: 'Notifications',
               child: Container(
                 width: 44,
                 height: 44,
-                decoration: const BoxDecoration(
-                  color: Color(0xFF16A085),
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? const Color(0xFF1E293B)
+                      : const Color(0xFFF3F4F6),
                   shape: BoxShape.circle,
                 ),
-                alignment: Alignment.center,
-                child: const Text(
-                  'H',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+                child: IconButton(
+                  tooltip: 'Notifications',
+                  icon: Icon(
+                    Icons.notifications_none,
+                    color: isDark ? Colors.white : const Color(0xFF374151),
+                    size: 22,
+                  ),
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('No new allergen alert notifications.'),
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            // User Avatar circle 'H'
+            Semantics(
+              button: true,
+              label: 'Open profile',
+              child: InkWell(
+                onTap: () {
+                  if (widget.onOpenProfile != null) {
+                    widget.onOpenProfile!();
+                  } else {
+                    Navigator.of(context).pushNamed(AppRoutes.profiles);
+                  }
+                },
+                borderRadius: BorderRadius.circular(22),
+                child: Container(
+                  width: 44,
+                  height: 44,
+                  decoration: const BoxDecoration(
+                    color: Color(0xFF16A085),
+                    shape: BoxShape.circle,
+                  ),
+                  alignment: Alignment.center,
+                  child: const Text(
+                    'H',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
@@ -237,7 +238,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Quick Actions: My Allergens, Search, Scan History, Learn
+  // Quick actions for allergens, ingredient search, scan history, and settings.
   Widget _buildQuickActions(BuildContext context, bool isDark) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -288,13 +289,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               title: 'Search',
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Opening Ingredient Database Search...'),
-                  ),
-                );
-              },
+              onTap: () => Navigator.of(context).pushNamed(AppRoutes.search),
             ),
             const SizedBox(width: 10),
             QuickActionCard(
@@ -335,7 +330,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   size: 20,
                 ),
               ),
-              title: 'Learn',
+              title: 'Settings',
               onTap: () {
                 Navigator.of(context).pushNamed(AppRoutes.settings);
               },
@@ -402,7 +397,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   // Individual recent scan card matching screenshot
-  Widget _buildRecentScanTile(BuildContext context, ScanItem item, bool isDark) {
+  Widget _buildRecentScanTile(
+    BuildContext context,
+    ScanItem item,
+    bool isDark,
+  ) {
     return InkWell(
       onTap: () {
         Navigator.of(
@@ -535,14 +534,19 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       child: Row(
         children: [
-          const Icon(Icons.wifi_off_rounded, color: Color(0xFFEA580C), size: 20),
+          const Icon(
+            Icons.wifi_off_rounded,
+            color: Color(0xFFEA580C),
+            size: 20,
+          ),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
               'Offline mode — analysis requires internet',
               style: TextStyle(
-                color:
-                    isDark ? const Color(0xFFFDBA74) : const Color(0xFF9A3412),
+                color: isDark
+                    ? const Color(0xFFFDBA74)
+                    : const Color(0xFF9A3412),
                 fontSize: 13,
                 fontWeight: FontWeight.w500,
               ),

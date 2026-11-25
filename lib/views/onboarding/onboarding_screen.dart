@@ -8,12 +8,7 @@ class OnboardingScreen extends StatefulWidget {
   final VoidCallback? onSkip;
   final VoidCallback? onLogin;
 
-  const OnboardingScreen({
-    super.key,
-    this.onFinish,
-    this.onSkip,
-    this.onLogin,
-  });
+  const OnboardingScreen({super.key, this.onFinish, this.onSkip, this.onLogin});
 
   @override
   State<OnboardingScreen> createState() => _OnboardingScreenState();
@@ -147,8 +142,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     color: isActive
                         ? const Color(0xFF16A085)
                         : (isDark
-                            ? const Color(0xFF334155)
-                            : const Color(0xFFE2E8F0)),
+                              ? const Color(0xFF334155)
+                              : const Color(0xFFE2E8F0)),
                     borderRadius: BorderRadius.circular(3),
                   ),
                 );
@@ -191,8 +186,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 onTap: _goToLogin,
                 borderRadius: BorderRadius.circular(8),
                 child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 6,
+                  ),
                   child: Text(
                     'I already have an account',
                     style: TextStyle(
@@ -221,35 +218,53 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     required String description,
     required bool isDark,
   }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 32),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          illustration,
-          const SizedBox(height: 40),
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: isDark ? Colors.white : const Color(0xFF0F172A),
-              height: 1.25,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final compact = constraints.maxHeight < 400;
+        final illustrationSize = compact ? 160.0 : 220.0;
+
+        return SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: illustrationSize,
+                    height: illustrationSize,
+                    child: FittedBox(child: illustration),
+                  ),
+                  SizedBox(height: compact ? 20 : 40),
+                  Text(
+                    title,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: isDark ? Colors.white : const Color(0xFF0F172A),
+                      height: 1.25,
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  Text(
+                    description,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: isDark
+                          ? const Color(0xFF94A3B8)
+                          : const Color(0xFF64748B),
+                      height: 1.45,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-          const SizedBox(height: 14),
-          Text(
-            description,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 14,
-              color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
-              height: 1.45,
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -347,11 +362,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 height: 12,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _buildDot(),
-                    _buildDot(),
-                    _buildDot(),
-                  ],
+                  children: [_buildDot(), _buildDot(), _buildDot()],
                 ),
               ),
             ),
@@ -431,11 +442,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     shape: BoxShape.circle,
                     border: Border.all(color: Colors.white, width: 2),
                   ),
-                  child: const Icon(
-                    Icons.check,
-                    color: Colors.white,
-                    size: 16,
-                  ),
+                  child: const Icon(Icons.check, color: Colors.white, size: 16),
                 ),
               ),
             ],

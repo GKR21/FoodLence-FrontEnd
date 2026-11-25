@@ -8,6 +8,7 @@ import 'package:foodlence/views/history/history_screen.dart';
 import 'package:foodlence/views/onboarding/onboarding_screen.dart';
 import 'package:foodlence/views/profiles/allergens_screen.dart';
 import 'package:foodlence/views/profiles/profile_screen.dart';
+import 'package:foodlence/views/search/ingredient_search_screen.dart';
 import 'package:foodlence/views/scanner/image_preview_screen.dart';
 import 'package:foodlence/views/scanner/scanner_screen.dart';
 import 'package:foodlence/views/scanner/scanning_screen.dart';
@@ -29,6 +30,7 @@ class AppRoutes {
   static const String profiles = '/profiles';
   static const String profile = '/profile';
   static const String allergens = '/allergens';
+  static const String search = '/search';
   static const String scanner = '/scanner';
   static const String scanning = '/scanning';
   static const String processing = '/processing';
@@ -141,6 +143,11 @@ class AppRoutes {
         return MaterialPageRoute(
           settings: routeSettings,
           builder: (_) => const AllergensScreen(),
+        );
+      case search:
+        return MaterialPageRoute(
+          settings: routeSettings,
+          builder: (_) => const IngredientSearchScreen(),
         );
       case settings:
       case backendStatus:
