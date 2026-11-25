@@ -8,10 +8,12 @@ import 'package:foodlence/views/history/history_screen.dart';
 import 'package:foodlence/views/onboarding/onboarding_screen.dart';
 import 'package:foodlence/views/profiles/allergens_screen.dart';
 import 'package:foodlence/views/profiles/profile_screen.dart';
+import 'package:foodlence/views/results/scan_result_screen.dart';
 import 'package:foodlence/views/search/ingredient_search_screen.dart';
 import 'package:foodlence/views/scanner/image_preview_screen.dart';
 import 'package:foodlence/views/scanner/scanner_screen.dart';
 import 'package:foodlence/views/scanner/scanning_screen.dart';
+import 'package:foodlence/views/search/ingredient_detail_screen.dart';
 import 'package:foodlence/views/settings/settings_screen.dart';
 import 'package:foodlence/views/splash/splash_screen.dart';
 import 'package:foodlence/widgets/navigation/bottom_navigation_bar.dart';
@@ -36,6 +38,9 @@ class AppRoutes {
   static const String processing = '/processing';
   static const String ocrReview = '/ocr-review';
   static const String imagePreview = '/image-preview';
+  static const String result = '/result';
+  static const String scanResult = '/scan-result';
+  static const String ingredientDetail = '/ingredient-detail';
   static const String settings = '/settings';
   static const String backendStatus = '/backend-status';
   static const String history = '/history';
@@ -86,8 +91,8 @@ class AppRoutes {
                 Navigator.of(context).pushReplacementNamed(ocrReview);
               } else if (target == 'result') {
                 Navigator.of(context).pushReplacementNamed(
-                  historyDetail,
-                  arguments: kHistory.first,
+                  result,
+                  arguments: data?['resultType'] ?? 'unsafe',
                 );
               } else if (target == 'home') {
                 Navigator.of(context).pushReplacementNamed(home);
@@ -105,13 +110,47 @@ class AppRoutes {
                 Navigator.of(context).pushReplacementNamed(home);
               } else if (target == "result") {
                 Navigator.of(context).pushReplacementNamed(
-                  historyDetail,
-                  arguments: kHistory.first,
+                  result,
+                  arguments: data?["resultType"] ?? "unsafe",
                 );
               } else {
                 Navigator.of(context).maybePop();
               }
             },
+          ),
+        );
+      case result:
+      case scanResult:
+        final resType = routeSettings.arguments is String
+            ? routeSettings.arguments as String
+            : (routeSettings.arguments is Map &&
+                    (routeSettings.arguments as Map).containsKey('resultType')
+                ? (routeSettings.arguments as Map)['resultType'] as String
+                : 'unsafe');
+        return MaterialPageRoute(
+          settings: routeSettings,
+          builder: (context) => ResultScreen(
+            resultType: resType,
+            onHome: () => Navigator.of(context).pushNamedAndRemoveUntil(
+              home,
+              (route) => false,
+            ),
+            onScanner: () => Navigator.of(context).pushReplacementNamed(home),
+            onHistory: () => Navigator.of(context).pushNamed(history),
+            onIngredientDetail: (name) => Navigator.of(context).pushNamed(
+              ingredientDetail,
+              arguments: name,
+            ),
+          ),
+        );
+      case ingredientDetail:
+        final ingredientName = routeSettings.arguments is String
+            ? routeSettings.arguments as String
+            : 'Casein';
+        return MaterialPageRoute(
+          settings: routeSettings,
+          builder: (context) => IngredientDetailScreen(
+            ingredientName: ingredientName,
           ),
         );
       case login:
