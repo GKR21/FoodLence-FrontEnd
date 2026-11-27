@@ -1,39 +1,30 @@
 import 'package:flutter/material.dart';
- 
-class AppColors {
-  static const teal = Color(0xFF16A085);
-  static const textDark = Color(0xFF111827);
-  static const label = Color(0xFF374151);
-  static const gray = Color(0xFF6B7280);
-  static const border = Color(0xFFE5E7EB);
-  static const fill = Color(0xFFF9FAFB);
-  static const checkBorder = Color(0xFFD1D5DB);
-}
- 
+import 'package:foodlence/config/app_colors.dart';
+
 class RegisterScreen extends StatefulWidget {
   /// Called when the user taps "Back" or "Sign in".
   final VoidCallback onGoToLogin;
- 
+
   /// Called when the user taps "Create Account".
   final VoidCallback onCreateAccount;
- 
+
   const RegisterScreen({
     super.key,
     required this.onGoToLogin,
     required this.onCreateAccount,
   });
- 
+
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
 }
- 
+
 class _RegisterScreenState extends State<RegisterScreen> {
   final _nameCtrl = TextEditingController();
   final _emailCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
   final _confirmCtrl = TextEditingController();
   bool _agreed = false;
- 
+
   @override
   void dispose() {
     _nameCtrl.dispose();
@@ -42,7 +33,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _confirmCtrl.dispose();
     super.dispose();
   }
- 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,7 +65,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
               const SizedBox(height: 24),
- 
+
               const Text(
                 'Create account',
                 style: TextStyle(
@@ -89,7 +80,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 style: TextStyle(fontSize: 15, color: AppColors.gray),
               ),
               const SizedBox(height: 32),
- 
+
               // Fields
               _Field(
                 label: 'Full name',
@@ -118,7 +109,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 controller: _confirmCtrl,
                 obscure: true,
               ),
- 
+
               // Terms checkbox
               const SizedBox(height: 24),
               GestureDetector(
@@ -136,13 +127,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         color: _agreed ? AppColors.teal : Colors.transparent,
                         borderRadius: BorderRadius.circular(4),
                         border: Border.all(
-                          color:
-                              _agreed ? AppColors.teal : AppColors.checkBorder,
+                          color: _agreed
+                              ? AppColors.teal
+                              : AppColors.checkBorder,
                           width: 2,
                         ),
                       ),
                       child: _agreed
-                          ? const Icon(Icons.check, size: 13, color: Colors.white)
+                          ? const Icon(
+                              Icons.check,
+                              size: 13,
+                              color: Colors.white,
+                            )
                           : null,
                     ),
                     const SizedBox(width: 12),
@@ -178,7 +174,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ],
                 ),
               ),
- 
+
               // Create account button
               const SizedBox(height: 24),
               _PressableScale(
@@ -191,7 +187,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.teal.withAlpha(77),
+                        color: AppColors.teal.withValues(alpha: 0.3),
                         blurRadius: 15,
                         offset: const Offset(0, 8),
                       ),
@@ -208,7 +204,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                 ),
               ),
- 
+
               // Sign in link
               const SizedBox(height: 20),
               Row(
@@ -238,7 +234,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 }
- 
+
 /// Labeled text field that highlights (teal border, white fill) on focus.
 class _Field extends StatefulWidget {
   final String label;
@@ -246,7 +242,7 @@ class _Field extends StatefulWidget {
   final TextEditingController controller;
   final bool obscure;
   final TextInputType? keyboardType;
- 
+
   const _Field({
     required this.label,
     required this.placeholder,
@@ -254,26 +250,26 @@ class _Field extends StatefulWidget {
     this.obscure = false,
     this.keyboardType,
   });
- 
+
   @override
   State<_Field> createState() => _FieldState();
 }
- 
+
 class _FieldState extends State<_Field> {
   final _focus = FocusNode();
- 
+
   @override
   void initState() {
     super.initState();
     _focus.addListener(() => setState(() {}));
   }
- 
+
   @override
   void dispose() {
     _focus.dispose();
     super.dispose();
   }
- 
+
   @override
   Widget build(BuildContext context) {
     final focused = _focus.hasFocus;
@@ -308,7 +304,7 @@ class _FieldState extends State<_Field> {
             style: const TextStyle(fontSize: 14, color: AppColors.textDark),
             decoration: InputDecoration(
               hintText: widget.placeholder,
-              hintStyle: const TextStyle(color: Color(0xFF9CA3AF)),
+              hintStyle: const TextStyle(color: AppColors.grayLight),
               border: InputBorder.none,
               contentPadding: const EdgeInsets.symmetric(vertical: 14),
             ),
@@ -318,21 +314,21 @@ class _FieldState extends State<_Field> {
     );
   }
 }
- 
+
 /// Scales down slightly while pressed (like active:scale-[0.98]).
 class _PressableScale extends StatefulWidget {
   final Widget child;
   final VoidCallback onTap;
- 
+
   const _PressableScale({required this.child, required this.onTap});
- 
+
   @override
   State<_PressableScale> createState() => _PressableScaleState();
 }
- 
+
 class _PressableScaleState extends State<_PressableScale> {
   bool _pressed = false;
- 
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -348,4 +344,3 @@ class _PressableScaleState extends State<_PressableScale> {
     );
   }
 }
- 

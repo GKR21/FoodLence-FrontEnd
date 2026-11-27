@@ -1,9 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:foodlence/main.dart';
+import 'package:foodlence/app.dart';
 
 void main() {
-  testWidgets('FoodLence smoke test', (WidgetTester tester) async {
+  testWidgets('FoodLense smoke test', (WidgetTester tester) async {
     await tester.pumpWidget(const FoodLenceApp());
-    expect(find.text('FoodLence'), findsOneWidget);
+    await tester.pump();
+    expect(find.text('FoodLense'), findsOneWidget);
   });
 }
